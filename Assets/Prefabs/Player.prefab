@@ -63,7 +63,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 20057ee3a151abe46a1d66a1d16ec6ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerSpeed: 2
+  moveSpeed: 2
+  runSpeed: 4
   jumpHeight: 1
   turnSpeed: 50
   minTurnAngle: -90

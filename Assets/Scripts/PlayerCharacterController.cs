@@ -10,7 +10,8 @@ public class PlayerCharacterController : MonoBehaviour
     private Vector3 playerVelocity;
     private bool groundedPlayer;
 
-    [SerializeField] float playerSpeed = 2.0f;
+    [SerializeField] float moveSpeed = 2.0f;
+    [SerializeField] float runSpeed = 4.0f;
     [SerializeField] float jumpHeight = 1.0f;
     [SerializeField] float turnSpeed = 2f;
     [SerializeField] float minTurnAngle = -90f;
@@ -42,10 +43,20 @@ public class PlayerCharacterController : MonoBehaviour
             playerVelocity.y = 0f;
         }
 
+        float speed;
+        if (Input.GetButton("Run"))
+        {
+            speed = runSpeed;
+        }
+        else
+        {
+            speed = moveSpeed;
+        }
+
         //Vector3 move = (cameraTransform.right * Input.GetAxis("Horizontal")) + (cameraTransform.forward * Input.GetAxis("Vertical"));
         Vector3 move = (transform.right * Input.GetAxis("Horizontal")) + (transform.forward * Input.GetAxis("Vertical"));
         move.y = 0f;
-        controller.Move(move * Time.deltaTime * playerSpeed);
+        controller.Move(move * Time.deltaTime * speed);
 
         /*if (move != Vector3.zero)
         {
