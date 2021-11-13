@@ -8,13 +8,15 @@ public class PlayerCharacterController : MonoBehaviour
 
     public CharacterController controller; //cria uma variavel para podermos armazenar o CharacterController
 
-    public float speed = 12f; // Define a velocidade do jogador
+    private float speed = 12f; // Define a velocidade atual do jogador
+    public float walkingSpeed = 12f; // Define a velocidade do jogador andando
+    public float runningSpeed = 24f; // Define a velocidade do jogador correndo
     public float gravity = -9.81f; //Força da gravidade
-    public float jumpHeight = 3f;
+    public float jumpHeight = 2f;
 
 
     public Transform groundCheck; //usado para armazenar a posição do groundCheck no jogo
-    public float groundDistance = 0.4f;
+    public float groundDistance = 0.4f; // defini o raio de detecção do algum objeto
     public LayerMask groundMask; // Utilizado para definir se um objeto sera reconhecido como chão, para saber se o personagem pode pular/ desacelerar a queda
 
     Vector3 velocity; // Usado para calcular a aceleração
@@ -50,6 +52,16 @@ public class PlayerCharacterController : MonoBehaviour
         {
             velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
         }
+
+        if (Input.GetButton("Run"))
+        {
+            speed = runningSpeed;
+        }else
+        {
+            speed = walkingSpeed;
+        }
+        
+
     }
 
     private void Gravity()
