@@ -44,6 +44,7 @@ public class PlayerCharacterController : MonoBehaviour
 
         //Vector3 move = (cameraTransform.right * Input.GetAxis("Horizontal")) + (cameraTransform.forward * Input.GetAxis("Vertical"));
         Vector3 move = (transform.right * Input.GetAxis("Horizontal")) + (transform.forward * Input.GetAxis("Vertical"));
+        move.y = 0f;
         controller.Move(move * Time.deltaTime * playerSpeed);
 
         /*if (move != Vector3.zero)
