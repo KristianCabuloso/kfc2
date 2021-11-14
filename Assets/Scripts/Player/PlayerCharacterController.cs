@@ -31,18 +31,24 @@ public class PlayerCharacterController : MonoBehaviour
 
     private void Update()
     {
+        
+
+    }
+
+    private void FixedUpdate()
+    {
         Movement();
         Gravity();
         GroundCheck();
-
     }
+
     // Função que faz o jogador se movimentar
     private void Movement()
     {
         float x = Input.GetAxis("Horizontal");
         float z = Input.GetAxis("Vertical");
 
-        Vector3 move = transform.right * x + transform.forward * z;
+        Vector3 move = (transform.right * x + transform.forward * z).normalized;
 
         controller.Move(move * speed * Time.deltaTime);
 
