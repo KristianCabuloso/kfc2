@@ -194,7 +194,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   controller: {fileID: 693157214214560600}
-  speed: 12
   walkingSpeed: 12
   runningSpeed: 24
   gravity: -9.81
