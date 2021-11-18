@@ -1,0 +1,1 @@
+Se os scripts desta pasta não estiverem mais sendo usados exclusivamente para testes, já podem ser movidos para outra pasta que corresponda melhor.

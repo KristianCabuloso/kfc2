@@ -6,6 +6,12 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/Scenes/TestScenes/ExperimentosPhoton/TestNetworkMenuScene.unity
+    guid: 60a092de0807d7f4ea62ce0a055cf86f
+  - enabled: 1
+    path: Assets/Scenes/TestScenes/ExperimentosPhoton/TestNetworkGameScene.unity
+    guid: 02120958d2324324d9779fa89d765ae6
+  - enabled: 1
     path: Assets/Scenes/TestScenes/basico.unity
     guid: e848ff96db9bfe64a9bfc9f812ed1d03
   m_configObjects: {}
