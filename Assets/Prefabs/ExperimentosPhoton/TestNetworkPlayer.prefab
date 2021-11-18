@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 5167276762149434347}
   - component: {fileID: 4478501134641042765}
   - component: {fileID: 3441916245179890652}
+  - component: {fileID: 5266615541410060810}
   m_Layer: 0
   m_Name: TestNetworkPlayer
   m_TagString: Untagged
@@ -111,3 +112,16 @@ MonoBehaviour:
   _entityBehaviourQueryOption: 0
   _entityPriorityCalculatorQueryOption: 1
   _entityReplicationFilterQueryOption: 1
+--- !u!114 &5266615541410060810
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2694844703461323574}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 40f7c7dbc208e2e438b0003f6d844f0e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  moveSpeed: 3
