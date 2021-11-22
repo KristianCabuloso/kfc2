@@ -8,6 +8,8 @@ using UnityEngine;
 
 public class NetworkMenuScene : GlobalEventListener
 {
+    public string gameSceneName;
+
     public void Command_StartServer()
     {
         BoltLauncher.StartServer();
@@ -20,8 +22,8 @@ public class NetworkMenuScene : GlobalEventListener
 
     public override void BoltStartDone()
     {
-        // 1234 = qualquer número. não sei q colocar por enquanto
-        BoltMatchmaking.CreateSession("1234", sceneToLoad: "TestNetworkGameScene");
+        // 1234 = qualquer numero. n?o sei q colocar por enquanto
+        BoltMatchmaking.CreateSession("1234", sceneToLoad: gameSceneName);
     }
 
     public override void SessionListUpdated(Map<Guid, UdpSession> sessionList)

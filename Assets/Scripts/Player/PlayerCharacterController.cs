@@ -1,48 +1,56 @@
 using System.Collections;
 using System.Collections.Generic;
+using Photon.Bolt;
 using UnityEngine;
 
 [RequireComponent(typeof(CharacterController))]
-public class PlayerCharacterController : MonoBehaviour
+public class PlayerCharacterController : EntityBehaviour<IKFCPlayerState>
 {
 
-    public CharacterController controller; //cria uma variavel para podermos armazenar o CharacterController
+    CharacterController controller; //cria uma variavel para podermos armazenar o CharacterController
 
     private float speed = 12f; // Define a velocidade atual do jogador
     public float walkingSpeed = 12f; // Define a velocidade do jogador andando
     public float runningSpeed = 24f; // Define a velocidade do jogador correndo
-    public float gravity = -9.81f; //Força da gravidade
+    public float gravity = -9.81f; //For?a da gravidade
     public float jumpHeight = 2f;
 
 
-    public Transform groundCheck; //usado para armazenar a posição do groundCheck no jogo
-    public float groundDistance = 0.4f; // defini o raio de detecção do algum objeto
-    public LayerMask groundMask; // Utilizado para definir se um objeto sera reconhecido como chão, para saber se o personagem pode pular/ desacelerar a queda
+    public Transform groundCheck; //usado para armazenar a posi??o do groundCheck no jogo
+    public float groundDistance = 0.4f; // defini o raio de detec??o do algum objeto
+    public LayerMask groundMask; // Utilizado para definir se um objeto sera reconhecido como ch?o, para saber se o personagem pode pular/ desacelerar a queda
 
-    Vector3 velocity; // Usado para calcular a aceleração
-    bool isGrounded; // boleana para verificar se esta no chão
+    Vector3 velocity; // Usado para calcular a acelera??o
+    bool isGrounded; // boleana para verificar se esta no ch?o
 
 
 
     private void Start()
     {
-        
+        controller = GetComponent<CharacterController>();
     }
 
-    private void Update()
+    public override void Attached()
     {
-        
+        state.SetTransforms(state.PlayerTransform, transform);
 
+        if (!entity.IsOwner)
+        {
+            Camera _camera = GetComponentInChildren<Camera>();
+            if (_camera)
+                _camera.gameObject.SetActive(false);
+        }
     }
 
-    private void FixedUpdate()
+    //private void FixedUpdate()
+    public override void SimulateOwner()
     {
         Movement();
         Gravity();
         GroundCheck();
     }
 
-    // Função que faz o jogador se movimentar
+    // Funcao que faz o jogador se movimentar
     private void Movement()
     {
         float x = Input.GetAxis("Horizontal");
@@ -50,9 +58,9 @@ public class PlayerCharacterController : MonoBehaviour
 
         Vector3 move = (transform.right * x + transform.forward * z).normalized;
 
-        controller.Move(move * speed * Time.deltaTime);
+        controller.Move(move * speed * BoltNetwork.FrameDeltaTime);
 
-        controller.Move(velocity * Time.deltaTime);
+        controller.Move(velocity * BoltNetwork.FrameDeltaTime);
 
         if(Input.GetButtonDown("Jump") && isGrounded) 
         {
@@ -72,7 +80,7 @@ public class PlayerCharacterController : MonoBehaviour
 
     private void Gravity()
     {
-        velocity.y += gravity * Time.deltaTime;
+        velocity.y += gravity * BoltNetwork.FrameDeltaTime;
     }
 
     private void GroundCheck()
