@@ -2,8 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using Photon.Bolt;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
-[RequireComponent(typeof(CharacterController))]
+[RequireComponent(typeof(CharacterController), typeof(BoltEntity))]
 public class PlayerCharacterController : EntityBehaviour<IKFCPlayerState>
 {
 
@@ -19,11 +20,18 @@ public class PlayerCharacterController : EntityBehaviour<IKFCPlayerState>
     public Transform groundCheck; //usado para armazenar a posi??o do groundCheck no jogo
     public float groundDistance = 0.4f; // defini o raio de detec??o do algum objeto
     public LayerMask groundMask; // Utilizado para definir se um objeto sera reconhecido como ch?o, para saber se o personagem pode pular/ desacelerar a queda
+    PlayerInputAction input;
 
     Vector3 velocity; // Usado para calcular a acelera??o
     bool isGrounded; // boleana para verificar se esta no ch?o
+    bool isRunning;
 
 
+
+    void Awake()
+    {
+        input = new PlayerInputAction();
+    }
 
     private void Start()
     {
@@ -32,8 +40,11 @@ public class PlayerCharacterController : EntityBehaviour<IKFCPlayerState>
 
     public override void Attached()
     {
+        // Setar o transform do Bolt (online)
         state.SetTransforms(state.PlayerTransform, transform);
 
+
+        // Desligar câmera se não for o jogador sendo controlado pelo cliente
         if (!entity.IsOwner)
         {
             Camera _camera = GetComponentInChildren<Camera>();
@@ -53,21 +64,23 @@ public class PlayerCharacterController : EntityBehaviour<IKFCPlayerState>
     // Funcao que faz o jogador se movimentar
     private void Movement()
     {
-        float x = Input.GetAxis("Horizontal");
-        float z = Input.GetAxis("Vertical");
+        /*float x = Input.GetAxis("Horizontal");
+        float z = Input.GetAxis("Vertical");*/
+        Vector2 analog = input.Player.Move.ReadValue<Vector2>();
 
-        Vector3 move = (transform.right * x + transform.forward * z).normalized;
+        Vector3 move = (transform.right * analog.x + transform.forward * analog.y).normalized;
 
         controller.Move(move * speed * BoltNetwork.FrameDeltaTime);
 
         controller.Move(velocity * BoltNetwork.FrameDeltaTime);
 
-        if(Input.GetButtonDown("Jump") && isGrounded) 
+        /*if(Input.GetButtonDown("Jump") && isGrounded) 
         {
             velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
-        }
-
-        if (Input.GetButton("Run"))
+        }*/
+            
+        //if (Input.GetButton("Run"))
+        if (isRunning)
         {
             speed = runningSpeed;
         }else
@@ -94,4 +107,26 @@ public class PlayerCharacterController : EntityBehaviour<IKFCPlayerState>
 
     }
 
+    public void Command_Jump(InputAction.CallbackContext obj)
+    {
+        if (isGrounded)
+            velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
+    }
+
+    void OnEnable()
+    {
+        PlayerInputAction.PlayerActions playerActions = input.Player;
+
+        playerActions.Jump.performed += Command_Jump;
+        playerActions.Run.performed += ctx => isRunning = true;
+        playerActions.Run.canceled += ctx => isRunning = false;
+        //playerActions.Run.performed += Command_Run;
+
+        input.Enable();
+    }
+
+    void OnDisable()
+    {
+        input.Disable();
+    }
 }
