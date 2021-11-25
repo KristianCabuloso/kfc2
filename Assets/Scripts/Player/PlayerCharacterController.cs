@@ -4,11 +4,12 @@ using Photon.Bolt;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-[RequireComponent(typeof(CharacterController), typeof(BoltEntity))]
+[RequireComponent(typeof(CharacterController), typeof(PlayerInputHandler), typeof(BoltEntity))]
 public class PlayerCharacterController : EntityBehaviour<IKFCPlayerState>
 {
 
     CharacterController controller; //cria uma variavel para podermos armazenar o CharacterController
+    PlayerInputAction input;
 
     private float speed = 12f; // Define a velocidade atual do jogador
     public float walkingSpeed = 12f; // Define a velocidade do jogador andando
@@ -20,24 +21,19 @@ public class PlayerCharacterController : EntityBehaviour<IKFCPlayerState>
     public Transform groundCheck; //usado para armazenar a posi??o do groundCheck no jogo
     public float groundDistance = 0.4f; // defini o raio de detec??o do algum objeto
     public LayerMask groundMask; // Utilizado para definir se um objeto sera reconhecido como ch?o, para saber se o personagem pode pular/ desacelerar a queda
-    PlayerInputAction input;
 
     Vector3 velocity; // Usado para calcular a acelera??o
     bool isGrounded; // boleana para verificar se esta no ch?o
-    bool isRunning;
+    [HideInInspector] public bool isRunning;
 
-
-
-    void Awake()
-    {
-        input = new PlayerInputAction();
-    }
 
     private void Start()
     {
         controller = GetComponent<CharacterController>();
+        input = GetComponent<PlayerInputHandler>().Input;
     }
 
+    // Inicializar assim que o Bolt atribuir o objeto (Start do Bolt)
     public override void Attached()
     {
         // Setar o transform do Bolt (online)
@@ -53,7 +49,7 @@ public class PlayerCharacterController : EntityBehaviour<IKFCPlayerState>
         }
     }
 
-    //private void FixedUpdate()
+    // Atualizar (Bolt) apenas para o jogador sendo controlado pelo cliente
     public override void SimulateOwner()
     {
         Movement();
@@ -64,8 +60,6 @@ public class PlayerCharacterController : EntityBehaviour<IKFCPlayerState>
     // Funcao que faz o jogador se movimentar
     private void Movement()
     {
-        /*float x = Input.GetAxis("Horizontal");
-        float z = Input.GetAxis("Vertical");*/
         Vector2 analog = input.Player.Move.ReadValue<Vector2>();
 
         Vector3 move = (transform.right * analog.x + transform.forward * analog.y).normalized;
@@ -74,21 +68,14 @@ public class PlayerCharacterController : EntityBehaviour<IKFCPlayerState>
 
         controller.Move(velocity * BoltNetwork.FrameDeltaTime);
 
-        /*if(Input.GetButtonDown("Jump") && isGrounded) 
-        {
-            velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
-        }*/
-            
-        //if (Input.GetButton("Run"))
         if (isRunning)
         {
             speed = runningSpeed;
-        }else
+        }
+        else
         {
             speed = walkingSpeed;
         }
-        
-
     }
 
     private void Gravity()
@@ -107,26 +94,10 @@ public class PlayerCharacterController : EntityBehaviour<IKFCPlayerState>
 
     }
 
-    public void Command_Jump(InputAction.CallbackContext obj)
+    // Callback de quando pressiona o botão de pulo
+    public void Command_Jump()
     {
         if (isGrounded)
             velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
-    }
-
-    void OnEnable()
-    {
-        PlayerInputAction.PlayerActions playerActions = input.Player;
-
-        playerActions.Jump.performed += Command_Jump;
-        playerActions.Run.performed += ctx => isRunning = true;
-        playerActions.Run.canceled += ctx => isRunning = false;
-        //playerActions.Run.performed += Command_Run;
-
-        input.Enable();
-    }
-
-    void OnDisable()
-    {
-        input.Disable();
     }
 }

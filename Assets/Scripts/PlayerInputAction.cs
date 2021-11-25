@@ -41,6 +41,22 @@ public class @PlayerInputAction : IInputActionCollection, IDisposable
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""CameraX"",
+                    ""type"": ""PassThrough"",
+                    ""id"": ""3bb5b83f-3bb3-4680-a3d4-489ebe4ebeec"",
+                    ""expectedControlType"": ""Axis"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""CameraY"",
+                    ""type"": ""PassThrough"",
+                    ""id"": ""71f5c340-70f0-476e-9ed0-b43a70299e0a"",
+                    ""expectedControlType"": ""Axis"",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -252,6 +268,28 @@ public class @PlayerInputAction : IInputActionCollection, IDisposable
                     ""action"": ""Run"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""81e29297-5f39-4a75-a204-0c3a2c2f7ae2"",
+                    ""path"": ""<Mouse>/delta/x"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""CameraX"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""e48aadd8-61ac-4938-873e-7b368b7b26e4"",
+                    ""path"": ""<Mouse>/delta/y"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""CameraY"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -263,6 +301,8 @@ public class @PlayerInputAction : IInputActionCollection, IDisposable
         m_Player_Move = m_Player.FindAction("Move", throwIfNotFound: true);
         m_Player_Jump = m_Player.FindAction("Jump", throwIfNotFound: true);
         m_Player_Run = m_Player.FindAction("Run", throwIfNotFound: true);
+        m_Player_CameraX = m_Player.FindAction("CameraX", throwIfNotFound: true);
+        m_Player_CameraY = m_Player.FindAction("CameraY", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -315,6 +355,8 @@ public class @PlayerInputAction : IInputActionCollection, IDisposable
     private readonly InputAction m_Player_Move;
     private readonly InputAction m_Player_Jump;
     private readonly InputAction m_Player_Run;
+    private readonly InputAction m_Player_CameraX;
+    private readonly InputAction m_Player_CameraY;
     public struct PlayerActions
     {
         private @PlayerInputAction m_Wrapper;
@@ -322,6 +364,8 @@ public class @PlayerInputAction : IInputActionCollection, IDisposable
         public InputAction @Move => m_Wrapper.m_Player_Move;
         public InputAction @Jump => m_Wrapper.m_Player_Jump;
         public InputAction @Run => m_Wrapper.m_Player_Run;
+        public InputAction @CameraX => m_Wrapper.m_Player_CameraX;
+        public InputAction @CameraY => m_Wrapper.m_Player_CameraY;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -340,6 +384,12 @@ public class @PlayerInputAction : IInputActionCollection, IDisposable
                 @Run.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnRun;
                 @Run.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnRun;
                 @Run.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnRun;
+                @CameraX.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnCameraX;
+                @CameraX.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnCameraX;
+                @CameraX.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnCameraX;
+                @CameraY.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnCameraY;
+                @CameraY.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnCameraY;
+                @CameraY.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnCameraY;
             }
             m_Wrapper.m_PlayerActionsCallbackInterface = instance;
             if (instance != null)
@@ -353,6 +403,12 @@ public class @PlayerInputAction : IInputActionCollection, IDisposable
                 @Run.started += instance.OnRun;
                 @Run.performed += instance.OnRun;
                 @Run.canceled += instance.OnRun;
+                @CameraX.started += instance.OnCameraX;
+                @CameraX.performed += instance.OnCameraX;
+                @CameraX.canceled += instance.OnCameraX;
+                @CameraY.started += instance.OnCameraY;
+                @CameraY.performed += instance.OnCameraY;
+                @CameraY.canceled += instance.OnCameraY;
             }
         }
     }
@@ -362,5 +418,7 @@ public class @PlayerInputAction : IInputActionCollection, IDisposable
         void OnMove(InputAction.CallbackContext context);
         void OnJump(InputAction.CallbackContext context);
         void OnRun(InputAction.CallbackContext context);
+        void OnCameraX(InputAction.CallbackContext context);
+        void OnCameraY(InputAction.CallbackContext context);
     }
 }
