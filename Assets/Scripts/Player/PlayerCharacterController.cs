@@ -40,9 +40,15 @@ public class PlayerCharacterController : EntityBehaviour<IKFCPlayerState>
         state.SetTransforms(state.PlayerTransform, transform);
 
 
-        // Desligar câmera se não for o jogador sendo controlado pelo cliente
-        if (!entity.IsOwner)
+        if (entity.IsOwner)
         {
+            WeaponController weaponController = GetComponent<WeaponController>();
+            if (weaponController)
+                FindObjectOfType<WeaponHUD>().Setup(weaponController);
+        }
+        else
+        {
+            // Desligar câmera se não for o jogador sendo controlado pelo cliente
             Camera _camera = GetComponentInChildren<Camera>();
             if (_camera)
                 _camera.gameObject.SetActive(false);

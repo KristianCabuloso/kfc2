@@ -57,6 +57,14 @@ public class @PlayerInputAction : IInputActionCollection, IDisposable
                     ""expectedControlType"": ""Axis"",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""Fire"",
+                    ""type"": ""Button"",
+                    ""id"": ""6767edda-f0a4-413e-b326-7c0df59f06e3"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -290,6 +298,28 @@ public class @PlayerInputAction : IInputActionCollection, IDisposable
                     ""action"": ""CameraY"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""b3fccd0d-95ba-4670-ac47-9cf1274fa840"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Fire"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""09b8efde-21db-45e4-a060-6d80416e2182"",
+                    ""path"": ""<Gamepad>/rightTrigger"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Fire"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -303,6 +333,7 @@ public class @PlayerInputAction : IInputActionCollection, IDisposable
         m_Player_Run = m_Player.FindAction("Run", throwIfNotFound: true);
         m_Player_CameraX = m_Player.FindAction("CameraX", throwIfNotFound: true);
         m_Player_CameraY = m_Player.FindAction("CameraY", throwIfNotFound: true);
+        m_Player_Fire = m_Player.FindAction("Fire", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -357,6 +388,7 @@ public class @PlayerInputAction : IInputActionCollection, IDisposable
     private readonly InputAction m_Player_Run;
     private readonly InputAction m_Player_CameraX;
     private readonly InputAction m_Player_CameraY;
+    private readonly InputAction m_Player_Fire;
     public struct PlayerActions
     {
         private @PlayerInputAction m_Wrapper;
@@ -366,6 +398,7 @@ public class @PlayerInputAction : IInputActionCollection, IDisposable
         public InputAction @Run => m_Wrapper.m_Player_Run;
         public InputAction @CameraX => m_Wrapper.m_Player_CameraX;
         public InputAction @CameraY => m_Wrapper.m_Player_CameraY;
+        public InputAction @Fire => m_Wrapper.m_Player_Fire;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -390,6 +423,9 @@ public class @PlayerInputAction : IInputActionCollection, IDisposable
                 @CameraY.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnCameraY;
                 @CameraY.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnCameraY;
                 @CameraY.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnCameraY;
+                @Fire.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnFire;
+                @Fire.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnFire;
+                @Fire.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnFire;
             }
             m_Wrapper.m_PlayerActionsCallbackInterface = instance;
             if (instance != null)
@@ -409,6 +445,9 @@ public class @PlayerInputAction : IInputActionCollection, IDisposable
                 @CameraY.started += instance.OnCameraY;
                 @CameraY.performed += instance.OnCameraY;
                 @CameraY.canceled += instance.OnCameraY;
+                @Fire.started += instance.OnFire;
+                @Fire.performed += instance.OnFire;
+                @Fire.canceled += instance.OnFire;
             }
         }
     }
@@ -420,5 +459,6 @@ public class @PlayerInputAction : IInputActionCollection, IDisposable
         void OnRun(InputAction.CallbackContext context);
         void OnCameraX(InputAction.CallbackContext context);
         void OnCameraY(InputAction.CallbackContext context);
+        void OnFire(InputAction.CallbackContext context);
     }
 }
