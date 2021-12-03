@@ -38,8 +38,13 @@ public class PlayerInputHandler : MonoBehaviour
         PlayerInputAction.PlayerActions playerActions = Input.Player;
 
         playerActions.Jump.performed += ctx => playerCharacterController.Command_Jump();
+
+        playerActions.Move.performed += ctx => playerCharacterController.Command_Move(ctx.ReadValue<Vector2>());
+        playerActions.Move.canceled += ctx => playerCharacterController.Command_CancelMove();
+
         playerActions.Run.performed += ctx => playerCharacterController.isRunning = true;
         playerActions.Run.canceled += ctx => playerCharacterController.isRunning = false;
+
         playerActions.Fire.performed += ctx => Command_Fire();
         //playerActions.Run.performed += Command_Run;
 

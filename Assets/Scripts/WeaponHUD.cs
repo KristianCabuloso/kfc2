@@ -17,10 +17,6 @@ public class WeaponHUD : MonoBehaviour
         this.playerWeaponController = playerWeaponController;
         playerLookTransform = playerWeaponController.GetComponentInChildren<CameraLook>().transform;
 
-        print("==================================");
-        print(playerWeaponController);
-        print(playerWeaponController.CurrentWeapon);
-        print(playerWeaponController.CurrentWeapon.targetSprite);
         targetImage.sprite = playerWeaponController.CurrentWeapon.targetSprite;
     }
 
