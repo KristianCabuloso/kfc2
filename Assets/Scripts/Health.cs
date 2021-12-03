@@ -1,38 +1,41 @@
 using System.Collections;
 using System.Collections.Generic;
+using Photon.Bolt;
 using UnityEngine;
 
-// TODO Fazer essa solução funcionar online
-public class Health : MonoBehaviour
+public class Health : EntityBehaviour<IKFCPlayerState>
 {
     [SerializeField] int maxHealth = 10;
-    [Tooltip("health já inicia (Start()) com maxHealth"), SerializeField]
-    int health;
 
-    void Start()
+    public override void Attached()
     {
-        health = maxHealth;
+        state.PlayerHealth = maxHealth;
     }
 
     public void ReceiveDamage(int damage)
     {
-        // Perder vida
-        health -= damage;
+        int health = state.PlayerHealth;
+
+        health -= damage; // Perder vida
+        bool zeroHealthFlag = health <= 0; // Ativar flag de vida zerada
 
         // Se vida chegou a 0
-        if (health <= 0)
+        if (zeroHealthFlag)
         {
             health = Mathf.Max(health, 0);
 
             // Chamar game over se o jogador for do atual cliente
-            PlayerCharacterController _player = GetComponent<PlayerCharacterController>();
-            if (_player && _player.entity.IsOwner)
+            if (entity.IsOwner)
             {
-                // TODO chamar game over
+                // TODO Alguma condição especial caso o jogador do cliente morra aqui
             }
-
-            // TODO adaptar para online
-            Destroy(gameObject);
         }
+
+        // Atualizar a vida online com a vida modificada
+        state.PlayerHealth = health;
+
+        // Destruir objeto pelo Bolt se a vida foi zerada
+        if (zeroHealthFlag)
+            BoltNetwork.Destroy(gameObject);
     }
 }
