@@ -2,10 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(PlayerCharacterController))]
+[RequireComponent(typeof(PlayerCharacterController), typeof(WeaponController))]
 public class PlayerInputHandler : MonoBehaviour
 {
     PlayerCharacterController playerCharacterController;
+    WeaponController weaponController;
     CameraLook playerCameraLook;
     public PlayerInputAction Input { private set; get; }
 
@@ -20,15 +21,14 @@ public class PlayerInputHandler : MonoBehaviour
     void Start()
     {
         playerCharacterController = GetComponent<PlayerCharacterController>();
+        weaponController = GetComponent<WeaponController>();
         playerCameraLook = GetComponentInChildren<CameraLook>();
     }
 
-    // Update is called once per frame
-    void Update()
+    void Command_Fire()
     {
-        
+        weaponController.TryShoot(playerCameraLook.transform.forward);
     }
-
 
     // Ao ativar o objeto/componente
     void OnEnable()
@@ -38,8 +38,14 @@ public class PlayerInputHandler : MonoBehaviour
         PlayerInputAction.PlayerActions playerActions = Input.Player;
 
         playerActions.Jump.performed += ctx => playerCharacterController.Command_Jump();
+
+        playerActions.Move.performed += ctx => playerCharacterController.Command_Move(ctx.ReadValue<Vector2>());
+        playerActions.Move.canceled += ctx => playerCharacterController.Command_CancelMove();
+
         playerActions.Run.performed += ctx => playerCharacterController.isRunning = true;
         playerActions.Run.canceled += ctx => playerCharacterController.isRunning = false;
+
+        playerActions.Fire.performed += ctx => Command_Fire();
         //playerActions.Run.performed += Command_Run;
 
         Input.Enable();

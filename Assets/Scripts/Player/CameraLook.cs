@@ -16,9 +16,18 @@ public class CameraLook : MonoBehaviour
     {
         input = GetComponentInParent<PlayerInputHandler>().Input;
 
-        // Bloqueia o mouse ao centro se estiver no Linux (corre??o de bug com o Linux e o novo input system)
+        // Tratamento de bug do novo Input System com mouse no Linux
         if (SystemInfo.operatingSystemFamily == OperatingSystemFamily.Linux)
+        {
+            // Bloquear o cursor no centro da tela se estiver em Linux
             Cursor.lockState = CursorLockMode.Locked;
+        }
+        else
+        {
+            // Deixar o cursor confiando ¨¤ janela e invis¨ªvel se n?o estiver em Linux
+            Cursor.lockState = CursorLockMode.Confined;
+            Cursor.visible = false;
+        }
     }
 
     void Update()

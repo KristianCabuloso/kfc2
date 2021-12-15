@@ -9,7 +9,7 @@
                     "name": "Move",
                     "type": "PassThrough",
                     "id": "bc1005fa-22cb-4f51-a6cb-a6e24ae2287c",
-                    "expectedControlType": "Button",
+                    "expectedControlType": "Analog",
                     "processors": "",
                     "interactions": ""
                 },
@@ -44,6 +44,14 @@
                     "expectedControlType": "Axis",
                     "processors": "",
                     "interactions": ""
+                },
+                {
+                    "name": "Fire",
+                    "type": "Button",
+                    "id": "6767edda-f0a4-413e-b326-7c0df59f06e3",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
                 }
             ],
             "bindings": [
@@ -51,7 +59,7 @@
                     "name": "Keyboard",
                     "id": "442bfd4b-1baa-491a-bc17-fb882dbfa40e",
                     "path": "2DVector",
-                    "interactions": "Hold",
+                    "interactions": "",
                     "processors": "",
                     "groups": "",
                     "action": "Move",
@@ -106,7 +114,7 @@
                     "name": "Gamepad Sam",
                     "id": "f4852f9b-d1e2-4449-a546-148527bf0914",
                     "path": "2DVector",
-                    "interactions": "Hold",
+                    "interactions": "",
                     "processors": "",
                     "groups": "",
                     "action": "Move",
@@ -161,7 +169,7 @@
                     "name": "Gamepad",
                     "id": "36e3b1aa-2933-4d5f-8310-dc74ceee1196",
                     "path": "2DVector",
-                    "interactions": "Hold",
+                    "interactions": "",
                     "processors": "",
                     "groups": "",
                     "action": "Move",
@@ -275,6 +283,28 @@
                     "processors": "",
                     "groups": "",
                     "action": "CameraY",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "b3fccd0d-95ba-4670-ac47-9cf1274fa840",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Fire",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "09b8efde-21db-45e4-a060-6d80416e2182",
+                    "path": "<Gamepad>/rightTrigger",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Fire",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

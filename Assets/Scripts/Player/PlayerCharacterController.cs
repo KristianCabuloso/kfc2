@@ -4,12 +4,12 @@ using Photon.Bolt;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-[RequireComponent(typeof(CharacterController), typeof(PlayerInputHandler), typeof(BoltEntity))]
+[RequireComponent(typeof(CharacterController), typeof(BoltEntity))]
 public class PlayerCharacterController : EntityBehaviour<IKFCPlayerState>
 {
 
     CharacterController controller; //cria uma variavel para podermos armazenar o CharacterController
-    PlayerInputAction input;
+    //PlayerInputAction input;
 
     private float speed = 12f; // Define a velocidade atual do jogador
     public float walkingSpeed = 12f; // Define a velocidade do jogador andando
@@ -24,13 +24,14 @@ public class PlayerCharacterController : EntityBehaviour<IKFCPlayerState>
 
     Vector3 velocity; // Usado para calcular a acelera??o
     bool isGrounded; // boleana para verificar se esta no ch?o
+    Vector2 moveAxis;
     [HideInInspector] public bool isRunning;
 
 
     private void Start()
     {
         controller = GetComponent<CharacterController>();
-        input = GetComponent<PlayerInputHandler>().Input;
+        //input = GetComponent<PlayerInputHandler>().Input;
     }
 
     // Inicializar assim que o Bolt atribuir o objeto (Start do Bolt)
@@ -39,13 +40,32 @@ public class PlayerCharacterController : EntityBehaviour<IKFCPlayerState>
         // Setar o transform do Bolt (online)
         state.SetTransforms(state.PlayerTransform, transform);
 
-
-        // Desligar câmera se não for o jogador sendo controlado pelo cliente
-        if (!entity.IsOwner)
+        if (entity.IsOwner)
         {
+            WeaponController weaponController = GetComponent<WeaponController>();
+            if (weaponController)
+                FindObjectOfType<WeaponHUD>().Setup(weaponController);
+
+            PlayerInputHandler inputHandler = GetComponent<PlayerInputHandler>();
+            if (inputHandler)
+            {
+                Debug.LogWarning("PlayerInputHandler detectado em " + name +
+                ". Considerando a forma como o script opera, não é recomendado que PlayerInputHandler seja inicializado pela interface da Unity, e sim adicionado por outro script.");
+            }
+            else
+            {
+                gameObject.AddComponent<PlayerInputHandler>();
+            }
+        }
+        else
+        {
+            // Desligar câmera se não for o jogador sendo controlado pelo cliente
             Camera _camera = GetComponentInChildren<Camera>();
             if (_camera)
                 _camera.gameObject.SetActive(false);
+                
+            /*if (inputHandler)
+                Destroy(inputHandler);*/
         }
     }
 
@@ -60,9 +80,9 @@ public class PlayerCharacterController : EntityBehaviour<IKFCPlayerState>
     // Funcao que faz o jogador se movimentar
     private void Movement()
     {
-        Vector2 analog = input.Player.Move.ReadValue<Vector2>();
+        //Vector2 analog = input.Player.Move.ReadValue<Vector2>();
 
-        Vector3 move = (transform.right * analog.x + transform.forward * analog.y).normalized;
+        Vector3 move = (transform.right * moveAxis.x + transform.forward * moveAxis.y).normalized;
 
         controller.Move(move * speed * BoltNetwork.FrameDeltaTime);
 
@@ -92,6 +112,16 @@ public class PlayerCharacterController : EntityBehaviour<IKFCPlayerState>
             velocity.y = -2f;
         }
 
+    }
+
+    public void Command_Move(Vector2 moveAxis)
+    {
+        this.moveAxis = moveAxis;
+    }
+
+    public void Command_CancelMove()
+    {
+        this.moveAxis = Vector2.zero;
     }
 
     // Callback de quando pressiona o botão de pulo
