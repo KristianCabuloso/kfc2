@@ -54,7 +54,7 @@ public class PlayerCharacterController : EntityBehaviour<IKFCPlayerState>
             }
             else
             {
-                inputHandler = gameObject.AddComponent<PlayerInputHandler>();
+                gameObject.AddComponent<PlayerInputHandler>();
             }
         }
         else
