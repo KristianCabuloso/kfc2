@@ -52,4 +52,9 @@ public class WeaponController : EntityBehaviour<IKFCPlayerState>
 
         return null;
     }
+
+    void OnDrawGizmos()
+    {
+        Gizmos.DrawRay(shotRaycastPoint.position, transform.forward);
+    }
 }

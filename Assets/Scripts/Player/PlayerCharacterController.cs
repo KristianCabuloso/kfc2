@@ -67,6 +67,10 @@ public class PlayerCharacterController : EntityBehaviour<IKFCPlayerState>
             /*if (inputHandler)
                 Destroy(inputHandler);*/
         }
+
+        Health health = GetComponent<Health>();
+        if (health)
+            FindObjectOfType<BattleManager>().players.Add(health);
     }
 
     // Atualizar (Bolt) apenas para o jogador sendo controlado pelo cliente
@@ -129,5 +133,12 @@ public class PlayerCharacterController : EntityBehaviour<IKFCPlayerState>
     {
         if (isGrounded)
             velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
+    }
+
+    public override void Detached()
+    {
+        Health health = GetComponent<Health>();
+        if (health)
+            FindObjectOfType<BattleManager>().players.Remove(health);
     }
 }

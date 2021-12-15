@@ -9,7 +9,10 @@ EditorBuildSettings:
     path: Assets/Scenes/TestScenes/NetworkMenuScene.unity
     guid: 8f74b77d64ad48e9c9a99c3a48024afb
   - enabled: 1
-    path: Assets/Scenes/TestScenes/basico.unity
+    path: Assets/Scenes/GameScene.unity
+    guid: ec02f889c8a8deb6aa1305e52b5d51f8
+  - enabled: 0
+    path: Assets/Scenes/TestScenes/TestGameScene.unity
     guid: e848ff96db9bfe64a9bfc9f812ed1d03
   - enabled: 0
     path: Assets/Scenes/TestScenes/ExperimentosPhoton/TestNetworkMenuScene.unity
