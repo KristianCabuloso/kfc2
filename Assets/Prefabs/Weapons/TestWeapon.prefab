@@ -46,5 +46,5 @@ MonoBehaviour:
   targetSprite: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
   maxAmmo: 1000
   ammo: 0
-  shotCooldown: 1
+  shotCooldown: 0.1
   damage: 1
