@@ -19,7 +19,7 @@ public class EnemyCharacterController : EntityBehaviour<IKFCPlayerState>
     BattleManager battleManager;
     Health target;
 
-    [SerializeField] EnemyState enemyState;
+    EnemyState enemyState;
     Vector3 velocity;
     bool isGrounded;
 
@@ -27,7 +27,8 @@ public class EnemyCharacterController : EntityBehaviour<IKFCPlayerState>
     public float gravity = -9.81f;
     public float startFightDistance = 1f;
     public float followTargetToShotDistance = 5f;
-    public float fleeTargetDistance = 1f;
+    //public float fleeTargetDistance = 1f;
+    public Transform baseTransform;
 
     public Transform groundCheck; //usado para armazenar a posi??o do groundCheck no jogo
     public float groundDistance = 0.4f; // defini o raio de detec??o do algum objeto
@@ -58,7 +59,10 @@ public class EnemyCharacterController : EntityBehaviour<IKFCPlayerState>
                 RestUpdate(); break;
 
             case EnemyState.Fighting:
-                FightingUpdate(); break;
+                FightUpdate(); break;
+
+            case EnemyState.BackingToBase:
+                BackBaseUpdate(); break;
         }
 
         velocity.y += gravity * BoltNetwork.FrameDeltaTime;
@@ -69,6 +73,8 @@ public class EnemyCharacterController : EntityBehaviour<IKFCPlayerState>
         {
             velocity.y = -2f;
         }
+
+        controller.Move(velocity * BoltNetwork.FrameDeltaTime);
     }
 
     void RestUpdate()
@@ -77,11 +83,11 @@ public class EnemyCharacterController : EntityBehaviour<IKFCPlayerState>
             enemyState = EnemyState.Fighting;
     }
 
-    void FightingUpdate()
+    void FightUpdate()
     {
         if (!target && !TryFindNewTarget())
         {
-            enemyState = EnemyState.Resting;//EnemyState.BackingToBase;
+            enemyState = EnemyState.BackingToBase;
             return;
         }
 
@@ -92,27 +98,40 @@ public class EnemyCharacterController : EntityBehaviour<IKFCPlayerState>
         Vector3 _rot = transform.eulerAngles;
         transform.eulerAngles = Vector3.up * _rot.y;
 
-        Vector3 _forward = transform.forward;
+        //Vector3 _forward = transform.forward;
 
-        Vector3 moveDirection = new Vector3();
+        //Vector3 moveDirection = new Vector3();
 
         float dist = Vector3.Distance(transform.position, targetTransform.position);
 
-        if (dist <= fleeTargetDistance)
+        /*if (dist <= fleeTargetDistance)
         {
             moveDirection = -_forward;
         }
-        else if (dist > followTargetToShotDistance)
+        else */if (dist > followTargetToShotDistance)
         {
-            moveDirection = _forward;
+            controller.Move(transform.forward * walkingSpeed * BoltNetwork.FrameDeltaTime);
+            //moveDirection = _forward;
         }
         else
         {
             weaponController.TryShoot(oldForward);
         }
+    }
 
-        controller.Move(moveDirection * walkingSpeed * BoltNetwork.FrameDeltaTime);
-        controller.Move(velocity * BoltNetwork.FrameDeltaTime);
+    void BackBaseUpdate()
+    {
+        if (!baseTransform || Vector3.Distance(transform.position, baseTransform.position) <= 1f)
+        {
+            enemyState = EnemyState.Resting;
+            return;
+        }
+
+        transform.LookAt(baseTransform);
+        Vector3 _rot = transform.eulerAngles;
+        transform.eulerAngles = Vector3.up * _rot.y;
+
+        controller.Move(transform.forward * walkingSpeed * BoltNetwork.FrameDeltaTime);
     }
 
     bool TryFindNewTarget()
@@ -145,7 +164,7 @@ public class EnemyCharacterController : EntityBehaviour<IKFCPlayerState>
     {
         Health health = GetComponent<Health>();
         if (health)
-            FindObjectOfType<BattleManager>().NPCs.Remove(health);
+            battleManager.NPCs.Remove(health);
     }
     /*void Update()
     {

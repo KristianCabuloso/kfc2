@@ -7,7 +7,7 @@ public class PlayerInputHandler : MonoBehaviour
 {
     PlayerCharacterController playerCharacterController;
     WeaponController weaponController;
-    CameraLook playerCameraLook;
+    //CameraLook playerCameraLook;
     public PlayerInputAction Input { private set; get; }
 
     // Inicializar antes do start, independente se tiver ativado ou não
@@ -22,13 +22,13 @@ public class PlayerInputHandler : MonoBehaviour
     {
         playerCharacterController = GetComponent<PlayerCharacterController>();
         weaponController = GetComponent<WeaponController>();
-        playerCameraLook = GetComponentInChildren<CameraLook>();
+        //playerCameraLook = GetComponentInChildren<CameraLook>();
     }
 
-    void Command_Fire()
+    /*void Command_Fire()
     {
         weaponController.TryShoot(playerCameraLook.transform.forward);
-    }
+    }*/
 
     // Ao ativar o objeto/componente
     void OnEnable()
@@ -45,7 +45,7 @@ public class PlayerInputHandler : MonoBehaviour
         playerActions.Run.performed += ctx => playerCharacterController.isRunning = true;
         playerActions.Run.canceled += ctx => playerCharacterController.isRunning = false;
 
-        playerActions.Fire.performed += ctx => Command_Fire();
+        playerActions.Fire.performed += ctx => playerCharacterController.Command_Fire();//Command_Fire();
         //playerActions.Run.performed += Command_Run;
 
         Input.Enable();

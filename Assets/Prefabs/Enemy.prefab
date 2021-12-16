@@ -236,12 +236,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e3000636888115a4d9cda58fd153a9ed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemyState: 0
   walkingSpeed: 5
   gravity: -9.81
   startFightDistance: 5
   followTargetToShotDistance: 5
-  fleeTargetDistance: 3
+  baseTransform: {fileID: 0}
   groundCheck: {fileID: 5085846901815633391}
   groundDistance: 0.4
   groundMask:

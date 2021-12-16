@@ -27,7 +27,10 @@ public class Spawner : MonoBehaviour
         {
             foreach (GameObject go in spawnObjects)
             {
-                BoltNetwork.Instantiate(go, transform.position, Quaternion.identity);
+                GameObject spawned = BoltNetwork.Instantiate(go, transform.position, Quaternion.identity);
+                EnemyCharacterController enemy = spawned.GetComponent<EnemyCharacterController>();
+                if (enemy)
+                    enemy.baseTransform = transform;
             }
 
             count = waitTime;
