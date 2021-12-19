@@ -12,10 +12,11 @@ public class WeaponHUD : MonoBehaviour
     WeaponController playerWeaponController;
     Transform playerLookTransform;
 
-    public void Setup(WeaponController playerWeaponController)
+    public void Setup(WeaponController playerWeaponController, Transform playerLookTransform)
     {
         this.playerWeaponController = playerWeaponController;
-        playerLookTransform = playerWeaponController.GetComponentInChildren<CameraLook>().transform;
+        this.playerLookTransform = playerLookTransform;
+        //playerLookTransform = playerWeaponController.GetComponentInChildren<CameraLook>().transform;
 
         targetImage.sprite = playerWeaponController.CurrentWeapon.targetSprite;
     }
