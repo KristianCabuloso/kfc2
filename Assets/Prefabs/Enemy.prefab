@@ -311,7 +311,7 @@ MonoBehaviour:
     m_Bits: 128
   weaponHolder: {fileID: 276958977030434898}
   initialWeapons:
-  - {fileID: 610932390378008527, guid: 63feb99d4c449bc3aab18824164861d6, type: 3}
+  - {fileID: 610932390378008527, guid: aa9fa0a0bbbcb18a9be1121297b7f3b5, type: 3}
 --- !u!114 &2067004125288299435
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -5,7 +5,7 @@ using UnityEngine;
 public class BattleManager : MonoBehaviour
 {
     public List<Health> players = new List<Health>();
-    [HideInInspector] public List<Health> NPCs = new List<Health>();
+    public List<Health> NPCs = new List<Health>();
 
     void Start()
     {

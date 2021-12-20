@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657868, g: 0.49641263, b: 0.57481706, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -4046,10 +4046,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ac779e17295a9bb57a9fc85589411653, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spawnObjects:
-  - {fileID: 8526222061182378213, guid: 1598baad5d3aa23489e32d35919c51b1, type: 3}
-  waitTime: 5
-  oneShot: 1
+  spawnObject: {fileID: 8526222061182378213, guid: 1598baad5d3aa23489e32d35919c51b1, type: 3}
+  spawnObjectLenght: 4
+  safeWaitTime: 10
 --- !u!4 &836498026
 Transform:
   m_ObjectHideFlags: 0
@@ -4058,7 +4057,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 836498024}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 500.32, y: 50.77, z: 489.38}
+  m_LocalPosition: {x: 550.1, y: 50.098, z: 472.7}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -8127,6 +8126,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 3567586609129846608, guid: 5bd08ce1d76d93f3191da4088515d3b3, type: 3}
+      propertyPath: m_AdditionalShaderChannelsFlag
+      value: 25
+      objectReference: {fileID: 0}
     - target: {fileID: 3567586609129846611, guid: 5bd08ce1d76d93f3191da4088515d3b3, type: 3}
       propertyPath: m_Pivot.x
       value: 0
