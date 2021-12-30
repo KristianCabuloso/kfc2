@@ -69,9 +69,6 @@ public class Spawner : GlobalEventListener
     public override void EntityAttached(BoltEntity entity)
     {
         if (enabled && !entity.IsOwner)
-        {
-            print("TESTEEEE");
             waveEvent.Send();
-        }
     }
 }

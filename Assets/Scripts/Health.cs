@@ -6,10 +6,14 @@ using UnityEngine;
 public class Health : EntityBehaviour<IKFCPlayerState>
 {
     [SerializeField] int maxHealth = 10;
+    public int MaxHealth { get => maxHealth; }
 
     public override void Attached()
     {
         state.PlayerHealth = maxHealth;
+
+        if (entity.IsOwner && GetComponent<PlayerCharacterController>()) // Prevenir o bug de atribuir vida dos inimigos à HUD do servidor
+            FindObjectOfType<HealthHUD>().Setup(this);
     }
 
     public void ReceiveDamage(int damage)
