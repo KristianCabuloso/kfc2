@@ -177,6 +177,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHealth: 250
+  regenerationAmount: 5
+  regenerationWaitTime: 0.5
+  regenerationStartWaitTime: 5
+  regenerationStartCount: 0
+  regenerationCount: 0
 --- !u!114 &1530321239983729495
 MonoBehaviour:
   m_ObjectHideFlags: 0

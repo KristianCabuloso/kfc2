@@ -6,7 +6,15 @@ using UnityEngine;
 public class Health : EntityBehaviour<IKFCPlayerState>
 {
     [SerializeField] int maxHealth = 10;
+
+    [Header("Regeneração")]
+    [SerializeField] int regenerationAmount = 2;
+    [SerializeField] float regenerationWaitTime = 0.5f;
+    [SerializeField] float regenerationStartWaitTime = 5f;
     public int MaxHealth { get => maxHealth; }
+
+    [SerializeField] float regenerationStartCount;
+    [SerializeField] float regenerationCount;
 
     public override void Attached()
     {
@@ -14,6 +22,31 @@ public class Health : EntityBehaviour<IKFCPlayerState>
 
         if (entity.IsOwner && GetComponent<PlayerCharacterController>()) // Prevenir o bug de atribuir vida dos inimigos à HUD do servidor
             FindObjectOfType<HealthHUD>().Setup(this);
+    }
+
+    public override void SimulateOwner()
+    {
+        if (regenerationStartCount <= 0f)
+        {
+            int healthAmount = state.PlayerHealth;
+
+            if (healthAmount < maxHealth)
+            {
+                if (regenerationCount <= 0f)
+                {
+                    state.PlayerHealth = Mathf.Min(healthAmount + regenerationAmount, maxHealth);
+                    regenerationCount = regenerationWaitTime;
+                }
+                else
+                {
+                    regenerationCount -= Time.deltaTime;
+                }
+            }
+        }
+        else
+        {
+            regenerationStartCount -= Time.deltaTime;
+        }
     }
 
     public void ReceiveDamage(int damage)
@@ -33,6 +66,12 @@ public class Health : EntityBehaviour<IKFCPlayerState>
             {
                 // TODO Alguma condição especial caso o jogador do cliente morra aqui
             }
+
+            regenerationStartCount = Mathf.Infinity;
+        }
+        else
+        {
+            regenerationStartCount = regenerationStartWaitTime;
         }
 
         // Atualizar a vida online com a vida modificada
