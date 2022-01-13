@@ -13,8 +13,8 @@ public class Health : EntityBehaviour<IKFCPlayerState>
     [SerializeField] float regenerationStartWaitTime = 5f;
     public int MaxHealth { get => maxHealth; }
 
-    [SerializeField] float regenerationStartCount;
-    [SerializeField] float regenerationCount;
+    float regenerationStartCount;
+    float regenerationCount;
 
     public override void Attached()
     {
@@ -61,18 +61,16 @@ public class Health : EntityBehaviour<IKFCPlayerState>
         {
             health = Mathf.Max(health, 0);
 
-            // Chamar game over se o jogador for do atual cliente
-            if (entity.IsOwner)
-            {
-                // TODO Alguma condição especial caso o jogador do cliente morra aqui
-            }
+            // Enviar analytics de morte se for jogador
+            PlayerAnalytics playerAnalytics = GetComponent<PlayerAnalytics>();
+            if (playerAnalytics)
+                playerAnalytics.SendDieAnalytics();
 
-            regenerationStartCount = Mathf.Infinity;
+            //regenerationStartCount = Mathf.Infinity;
+            //enabled = false;
         }
-        else
-        {
-            regenerationStartCount = regenerationStartWaitTime;
-        }
+
+        regenerationStartCount = regenerationStartWaitTime;
 
         // Atualizar a vida online com a vida modificada
         state.PlayerHealth = health;

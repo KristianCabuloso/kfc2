@@ -88,7 +88,12 @@ public class PlayerCharacterController : EntityBehaviour<IKFCPlayerState>
             Camera _camera = GetComponentInChildren<Camera>();
             if (_camera)
                 _camera.gameObject.SetActive(false);
-                
+
+            // Destruir script que envia dados de telemetria, pois apenas o próprio cliente pode enviá-los
+            PlayerAnalytics playerAnalytics = GetComponent<PlayerAnalytics>();
+            if (playerAnalytics)
+                Destroy(playerAnalytics);
+
             /*if (inputHandler)
                 Destroy(inputHandler);*/
         }
@@ -191,7 +196,8 @@ public class PlayerCharacterController : EntityBehaviour<IKFCPlayerState>
 
     public void Command_Fire()
     {
-        weaponController.TryShoot(playerHead.forward);
+        if (weaponController)
+            weaponController.TryShoot(playerHead.forward);
     }
 
     public override void Detached()
