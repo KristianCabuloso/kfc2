@@ -79,15 +79,22 @@ public class NextPlayersAnalytics : MonoBehaviour
 
         int groupsCount = nextPlayersAnalyticsGroups.Count;
 
-        AnalyticsResult result = Analytics.CustomEvent("Proximodade de jogadores", new Dictionary<string, object>
+        Dictionary<string, object> dict = new Dictionary<string, object>
         {
             {"Tempo total proximo de jogadores", nextToPlayersTotalTime},
             {"Media tempo proximo de jogadores", nextToPlayersTotalTime / groupsCount},
             {"Numero maximo de jogadores proximos", maxNextPlayersCount},
             {"Media numero de jogadores proximos", totalPlayers / groupsCount},
             {"Tempo total distante de jogadores", distantFromPlayersTotalTime},
-        });
+        };
+        AnalyticsResult result = Analytics.CustomEvent("Proximodade de jogadores", dict);
         print("Proximodade de jogadores | " + result);
+        string printMessage = "";
+        foreach (KeyValuePair<string, object> k in dict)
+        {
+            printMessage += '\n' + k.Key + " : " + k.Value;
+        }
+        print(printMessage);
 
         enabled = false;
     }

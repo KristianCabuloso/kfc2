@@ -2,11 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(PlayerCharacterController), typeof(WeaponController))]
+[RequireComponent(typeof(PlayerCharacterController), typeof(WeaponController), typeof(PlayerReviveController))]
+[RequireComponent(typeof(PlayerReviveController))]
 public class PlayerInputHandler : MonoBehaviour
 {
     PlayerCharacterController playerCharacterController;
     WeaponController weaponController;
+    PlayerReviveController playerReviveController;
     //CameraLook playerCameraLook;
     public PlayerInputAction Input { private set; get; }
 
@@ -22,6 +24,7 @@ public class PlayerInputHandler : MonoBehaviour
     {
         playerCharacterController = GetComponent<PlayerCharacterController>();
         weaponController = GetComponent<WeaponController>();
+        playerReviveController = GetComponent<PlayerReviveController>();
         //playerCameraLook = GetComponentInChildren<CameraLook>();
     }
 
@@ -45,8 +48,10 @@ public class PlayerInputHandler : MonoBehaviour
         playerActions.Run.performed += ctx => playerCharacterController.isRunning = true;
         playerActions.Run.canceled += ctx => playerCharacterController.isRunning = false;
 
-        playerActions.Fire.performed += ctx => playerCharacterController.Command_Fire();//Command_Fire();
+        playerActions.Fire.performed += ctx => playerCharacterController.Command_Fire();
         //playerActions.Run.performed += Command_Run;
+
+        playerActions.Revive.performed += ctx => playerReviveController.Command_Revive();
 
         Input.Enable();
     }

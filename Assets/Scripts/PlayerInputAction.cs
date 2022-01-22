@@ -65,6 +65,14 @@ public class @PlayerInputAction : IInputActionCollection, IDisposable
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""Revive"",
+                    ""type"": ""Button"",
+                    ""id"": ""c5611f30-fb93-44b1-99a5-27f1089f596b"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -320,6 +328,17 @@ public class @PlayerInputAction : IInputActionCollection, IDisposable
                     ""action"": ""Fire"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""7fcd4885-95bb-4b5e-9168-9f6f5e7d466d"",
+                    ""path"": ""<Keyboard>/f"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Revive"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -334,6 +353,7 @@ public class @PlayerInputAction : IInputActionCollection, IDisposable
         m_Player_CameraX = m_Player.FindAction("CameraX", throwIfNotFound: true);
         m_Player_CameraY = m_Player.FindAction("CameraY", throwIfNotFound: true);
         m_Player_Fire = m_Player.FindAction("Fire", throwIfNotFound: true);
+        m_Player_Revive = m_Player.FindAction("Revive", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -389,6 +409,7 @@ public class @PlayerInputAction : IInputActionCollection, IDisposable
     private readonly InputAction m_Player_CameraX;
     private readonly InputAction m_Player_CameraY;
     private readonly InputAction m_Player_Fire;
+    private readonly InputAction m_Player_Revive;
     public struct PlayerActions
     {
         private @PlayerInputAction m_Wrapper;
@@ -399,6 +420,7 @@ public class @PlayerInputAction : IInputActionCollection, IDisposable
         public InputAction @CameraX => m_Wrapper.m_Player_CameraX;
         public InputAction @CameraY => m_Wrapper.m_Player_CameraY;
         public InputAction @Fire => m_Wrapper.m_Player_Fire;
+        public InputAction @Revive => m_Wrapper.m_Player_Revive;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -426,6 +448,9 @@ public class @PlayerInputAction : IInputActionCollection, IDisposable
                 @Fire.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnFire;
                 @Fire.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnFire;
                 @Fire.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnFire;
+                @Revive.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnRevive;
+                @Revive.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnRevive;
+                @Revive.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnRevive;
             }
             m_Wrapper.m_PlayerActionsCallbackInterface = instance;
             if (instance != null)
@@ -448,6 +473,9 @@ public class @PlayerInputAction : IInputActionCollection, IDisposable
                 @Fire.started += instance.OnFire;
                 @Fire.performed += instance.OnFire;
                 @Fire.canceled += instance.OnFire;
+                @Revive.started += instance.OnRevive;
+                @Revive.performed += instance.OnRevive;
+                @Revive.canceled += instance.OnRevive;
             }
         }
     }
@@ -460,5 +488,6 @@ public class @PlayerInputAction : IInputActionCollection, IDisposable
         void OnCameraX(InputAction.CallbackContext context);
         void OnCameraY(InputAction.CallbackContext context);
         void OnFire(InputAction.CallbackContext context);
+        void OnRevive(InputAction.CallbackContext context);
     }
 }
