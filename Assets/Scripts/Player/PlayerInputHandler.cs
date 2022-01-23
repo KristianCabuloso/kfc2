@@ -52,6 +52,7 @@ public class PlayerInputHandler : MonoBehaviour
         //playerActions.Run.performed += Command_Run;
 
         playerActions.Revive.performed += ctx => playerReviveController.Command_Revive();
+        playerActions.Revive.canceled += ctx => playerReviveController.Command_CancelRevive();
 
         Input.Enable();
     }

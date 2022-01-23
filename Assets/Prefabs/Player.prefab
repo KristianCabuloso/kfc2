@@ -250,7 +250,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 73bd8788d0aa8497498fa6436b34413b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  timeToDie: 10
+  timeToDie: 100
   timeToRevive: 5
   reviveDistance: 1.5
 --- !u!1 &693157214897547506

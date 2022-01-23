@@ -325,3 +325,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHealth: 3
+  regenerationAmount: 2
+  regenerationWaitTime: 0.5
+  regenerationStartWaitTime: 5

@@ -20,11 +20,11 @@ public class Health : EntityBehaviour<IKFCPlayerState>
 
     public override void Attached()
     {
-        state.PlayerHealth = maxHealth;
-
         if (entity.IsOwner)
         {
-            if (GetComponent<PlayerCharacterController>()) // Prevenir o bug de atribuir vida dos inimigos à HUD do servidor) 
+            state.PlayerHealth = maxHealth;
+
+            if  (GetComponent<PlayerCharacterController>()) // Prevenir o bug de atribuir vida dos inimigos à HUD do servidor) 
             {
                 FindObjectOfType<HealthHUD>().Setup(this);
                 reviveController = GetComponent<PlayerReviveController>();
@@ -86,7 +86,7 @@ public class Health : EntityBehaviour<IKFCPlayerState>
             if (reviveController)
             {
                 reviveController.TriggerTimeToDie();
-                regenerationCount = Mathf.Infinity;
+                regenerationStartCount = Mathf.Infinity;
             }
             else
             {

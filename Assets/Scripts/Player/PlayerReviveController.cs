@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Photon.Bolt;
 using UnityEngine;
 
 public enum ReviveState : byte
@@ -10,7 +11,7 @@ public enum ReviveState : byte
 }
 
 [RequireComponent(typeof(Health))]
-public class PlayerReviveController : MonoBehaviour
+public class PlayerReviveController : EntityBehaviour<IKFCPlayerState>
 {
     [Tooltip("Tempo que o jogador levará para morrer")]
     public float timeToDie = 10f;
@@ -20,6 +21,7 @@ public class PlayerReviveController : MonoBehaviour
     public float reviveDistance = 1.5f;
 
     BattleManager battleManager;
+    PlayerReviveHUD reviveHud;
     Health health;
 
     public ReviveState State { private set; get; }
@@ -27,14 +29,18 @@ public class PlayerReviveController : MonoBehaviour
     public float ReviveCount { private set; get; }
     Health otherPlayerHealth;
 
-    void Start()
+    public override void Attached()
     {
         battleManager = FindObjectOfType<BattleManager>();
         health = GetComponent<Health>();
 
-        PlayerCharacterController pcc = GetComponent<PlayerCharacterController>();
-        if (pcc && pcc.entity.IsOwner)
-            FindObjectOfType<PlayerReviveHUD>().Setup(this);
+        if (entity.IsOwner && GetComponent<PlayerCharacterController>())
+        {
+            reviveHud = FindObjectOfType<PlayerReviveHUD>();
+            reviveHud.Setup(this);
+        }
+            
+        state.OnPlayerRevive += Photon_Revive;
     }
 
     void Update()
@@ -44,8 +50,10 @@ public class PlayerReviveController : MonoBehaviour
             case ReviveState.Dying:
                 if (DieCount <= 0f)
                 {
-                    health.Die();
                     State = ReviveState.None;
+                    state.PlayerIsDying = false;
+                    reviveHud.Clear();
+                    health.Die();
                 }
                 else
                 {
@@ -56,8 +64,10 @@ public class PlayerReviveController : MonoBehaviour
             case ReviveState.Reviving:
                 if (ReviveCount <= 0f)
                 {
-                    otherPlayerHealth.Revive();
+                    state.PlayerReviveEntity = otherPlayerHealth.entity;
+                    state.PlayerRevive();
                     State = ReviveState.None;
+                    reviveHud.Clear();
                 }
                 else
                 {
@@ -71,11 +81,30 @@ public class PlayerReviveController : MonoBehaviour
     {
         DieCount = timeToDie;
         State = ReviveState.Dying;
+        state.PlayerIsDying = true;
     }
 
     public void ReceiveDamage()
     {
         DieCount -= Time.deltaTime * 2f;
+    }
+
+    public void Revive()
+    {
+        print("FUNFOU???");
+        State = ReviveState.None;
+        state.PlayerIsDying = false;
+        reviveHud.Clear();
+        health.Revive();
+    }
+
+    void Photon_Revive()
+    {
+        //Color color;
+
+        BoltEntity _entity = state.PlayerReviveEntity;
+        if (_entity.IsOwner)
+            _entity.GetComponent<PlayerReviveController>().Revive();
     }
 
     /*public bool IsDying()
@@ -92,16 +121,26 @@ public class PlayerReviveController : MonoBehaviour
             if (Vector3.Distance(_pos, h.transform.position) <= reviveDistance)
             {
                 PlayerReviveController prc = h.GetComponent<PlayerReviveController>();
-                if (prc && prc.State == ReviveState.Dying)
+                if (prc && prc.state.PlayerIsDying == true)
                 {
                     otherPlayerHealth = h;
                     transform.LookAt(h.transform);
                     Vector3 _rot = transform.eulerAngles;
                     transform.eulerAngles = Vector3.up * _rot.y;
+                    ReviveCount = timeToRevive;
                     State = ReviveState.Reviving;
                     break;
                 }
             }
+        }
+    }
+
+    public void Command_CancelRevive()
+    {
+        if (State == ReviveState.Reviving)
+        {
+            State = ReviveState.None;
+            reviveHud.Clear();
         }
     }
 }

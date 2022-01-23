@@ -15,13 +15,7 @@ public class PlayerReviveHUD : MonoBehaviour
 
     void Start()
     {
-        Vector3 dieScale = dieBarRectTransform.localScale;
-        dieScale.x = 0f;
-        dieBarRectTransform.localScale = dieScale;
-
-        Vector3 reviveScale = reviveBarRectTransform.localScale;
-        reviveScale.x = 0f;
-        reviveBarRectTransform.localScale = reviveScale;
+        Clear();
     }
 
     public void Setup(PlayerReviveController reviveController)
@@ -46,9 +40,20 @@ public class PlayerReviveHUD : MonoBehaviour
 
             case ReviveState.Reviving:
                 _scale = reviveBarRectTransform.localScale;
-                _scale.x = reviveController.ReviveCount / reviveController.timeToRevive; ;
+                _scale.x = 1f - (reviveController.ReviveCount / reviveController.timeToRevive);
                 reviveBarRectTransform.localScale = _scale;
                 break;
         }
+    }
+
+    public void Clear()
+    {
+        Vector3 dieScale = dieBarRectTransform.localScale;
+        dieScale.x = 0f;
+        dieBarRectTransform.localScale = dieScale;
+
+        Vector3 reviveScale = reviveBarRectTransform.localScale;
+        reviveScale.x = 0f;
+        reviveBarRectTransform.localScale = reviveScale;
     }
 }
