@@ -41,18 +41,22 @@ public class NextPlayersAnalytics : MonoBehaviour
                     NextPlayersAnalyticsGroup newGroup = new NextPlayersAnalyticsGroup();
                     nextPlayersAnalyticsGroups.Add(newGroup);
                     currentGroup.totalTime = Time.time - currentGroupStartTime;
+                    currentGroup.players = new List<Health>(closerPlayers);
                     currentGroup = newGroup;
                     currentGroupStartTime = Time.time;
+                    closerPlayers.Clear();
                     break;
                 }
             }
         }
-
-        // Verificar se há algum jogador próximo
-        foreach (Health otherPlayer in battleManager.players)
+        else
         {
-            if (!closerPlayers.Contains(otherPlayer) && Vector3.Distance(_pos, otherPlayer.transform.position) <= nextToPlayersMinimumDistance)
-                closerPlayers.Add(otherPlayer);
+            // Verificar se há algum jogador próximo
+            foreach (Health otherPlayer in battleManager.players)
+            {
+                if (!closerPlayers.Contains(otherPlayer) && Vector3.Distance(_pos, otherPlayer.transform.position) <= nextToPlayersMinimumDistance)
+                    closerPlayers.Add(otherPlayer);
+            }
         }
 
         // Se não houver jogadores próximos (após operações que add/rem jogadores à lista)

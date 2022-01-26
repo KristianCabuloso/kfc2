@@ -10,6 +10,8 @@ public class WeaponController : EntityBehaviour<IKFCPlayerState>
     [SerializeField] Transform weaponHolder;
     [SerializeField] Weapon[] initialWeapons;
 
+    PlayerAnalytics playerAnalytics;
+
     Weapon weapon;
     public Weapon CurrentWeapon { get => weapon; }
     // TODO Fazer sistema de troca de armas
@@ -22,6 +24,7 @@ public class WeaponController : EntityBehaviour<IKFCPlayerState>
     public override void Attached()
     {
         state.OnPlayerShoot = Shoot;
+        playerAnalytics = GetComponent<PlayerAnalytics>();
     }
 
     void Shoot()
@@ -30,8 +33,17 @@ public class WeaponController : EntityBehaviour<IKFCPlayerState>
         Health hitHealth = GetForwardRaycastHitHealth(state.PlayerShotDirection);
         if (hitHealth)
         {
-            hitHealth.ReceiveDamage(weapon.Damage);
-            print(hitHealth.name + " TOMOU " + weapon.Damage + " DANO");
+            int _damage = weapon.Damage;
+
+            if (playerAnalytics && hitHealth.GetComponent<EnemyCharacterController>())
+            {
+                playerAnalytics.hittedEnemies++;
+                if (hitHealth.state.PlayerHealth - _damage <= 0)
+                    playerAnalytics.killedEnemies++;
+            }
+
+            hitHealth.ReceiveDamage(_damage);
+            print(hitHealth.name + " TOMOU " + _damage + " DANO");
         }
     }
 

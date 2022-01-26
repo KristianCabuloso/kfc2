@@ -21,6 +21,7 @@ public class PlayerReviveController : EntityBehaviour<IKFCPlayerState>
     public float reviveDistance = 1.5f;
 
     BattleManager battleManager;
+    PlayerAnalytics playerAnalytics;
     PlayerReviveHUD reviveHud;
     Health health;
 
@@ -32,15 +33,16 @@ public class PlayerReviveController : EntityBehaviour<IKFCPlayerState>
     public override void Attached()
     {
         battleManager = FindObjectOfType<BattleManager>();
+        playerAnalytics = GetComponent<PlayerAnalytics>();
         health = GetComponent<Health>();
 
-        if (entity.IsOwner && GetComponent<PlayerCharacterController>())
+        if (entity.IsOwner && playerAnalytics)
         {
             reviveHud = FindObjectOfType<PlayerReviveHUD>();
             reviveHud.Setup(this);
         }
             
-        state.OnPlayerRevive += Photon_Revive;
+        state.OnPlayerRevive = Photon_Revive;
     }
 
     void Update()
@@ -64,6 +66,8 @@ public class PlayerReviveController : EntityBehaviour<IKFCPlayerState>
             case ReviveState.Reviving:
                 if (ReviveCount <= 0f)
                 {
+                    if (playerAnalytics)
+                        playerAnalytics.revivedPlayers++;
                     state.PlayerReviveEntity = otherPlayerHealth.entity;
                     state.PlayerRevive();
                     State = ReviveState.None;
@@ -91,9 +95,10 @@ public class PlayerReviveController : EntityBehaviour<IKFCPlayerState>
 
     public void Revive()
     {
-        print("FUNFOU???");
         State = ReviveState.None;
         state.PlayerIsDying = false;
+        if (playerAnalytics)
+            playerAnalytics.revivedByPlayers++;
         reviveHud.Clear();
         health.Revive();
     }

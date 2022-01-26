@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Analytics;
 
-[RequireComponent(typeof(PlayerCharacterController), typeof(NextPlayersAnalytics))]
+[RequireComponent(typeof(PlayerReviveController), typeof(WeaponController), typeof(NextPlayersAnalytics))]
 public class PlayerAnalytics : MonoBehaviour
 {
     float startGameTime;// = Time.time;
@@ -13,6 +13,11 @@ public class PlayerAnalytics : MonoBehaviour
     float mostTimeAreaTime;
     float startMostTimeAreaTime;
 
+    [HideInInspector] public int revivedPlayers;
+    [HideInInspector] public int revivedByPlayers;
+
+    [HideInInspector] public int hittedEnemies;
+    [HideInInspector] public int killedEnemies;
 
     void Start()
     {
@@ -21,16 +26,7 @@ public class PlayerAnalytics : MonoBehaviour
 
     public void SendDieAnalytics()
     {
-        RefreshToNewMosTimeArea();
-
-        SendAnalytics("Morreu", new Dictionary<string, object>()
-        {
-            { "Posicao", transform.position },
-            { "Tempo de jogo", Time.time - startGameTime },
-            { "Area onde jogador passa mais tempo", mostTimeAreaName }
-        });
-
-        GetComponent<NextPlayersAnalytics>().FinishAndSendAnalytics();
+        SendStatiscsAnalytics("Morreu");
     }
 
     void RefreshToNewMosTimeArea()
@@ -43,7 +39,26 @@ public class PlayerAnalytics : MonoBehaviour
         }
     }
 
-    void SendAnalytics(string eventName)
+    void SendStatiscsAnalytics(string eventName)
+    {
+        RefreshToNewMosTimeArea();
+
+        AnalyticsResult result = Analytics.CustomEvent(eventName, new Dictionary<string, object>()
+        {
+            { "Posicao", transform.position },
+            { "Tempo de jogo", Time.time - startGameTime },
+            { "Area onde passou mais tempo", mostTimeAreaName },
+            { "Revivido por jogadores", revivedByPlayers },
+            { "Reviveu jogadores", revivedPlayers },
+            { "Acerto em inimigos", hittedEnemies },
+            { "Matou inimigos", killedEnemies }
+        });
+        print(eventName + " | " + result);
+
+        GetComponent<NextPlayersAnalytics>().FinishAndSendAnalytics();
+    }
+
+    /*void SendAnalytics(string eventName)
     {
         AnalyticsResult result = Analytics.CustomEvent(eventName);
         print(eventName + " | " + result);
@@ -53,7 +68,7 @@ public class PlayerAnalytics : MonoBehaviour
     {
         AnalyticsResult result = Analytics.CustomEvent(eventName, arguments);
         print(eventName + " | " + result);
-    }
+}*/
 
     void OnTriggerEnter(Collider c)
     {
@@ -66,6 +81,11 @@ public class PlayerAnalytics : MonoBehaviour
             currentAreaName = area.regionName;
         }
 
+    }
+
+    void OnApplicationQuit()
+    {
+        SendStatiscsAnalytics("Saiu");
     }
 
     void OnDestroy()
