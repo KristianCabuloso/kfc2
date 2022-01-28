@@ -99,7 +99,7 @@ public class PlayerCharacterController : EntityBehaviour<IKFCPlayerState>
         }
 
         Health health = GetComponent<Health>();
-        if (health)
+        if (health && !entity.IsOwner)
             battleManager.players.Add(health);
     }
 

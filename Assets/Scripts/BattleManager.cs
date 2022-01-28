@@ -7,7 +7,7 @@ public class BattleManager : MonoBehaviour
     public List<Health> players = new List<Health>();
     public List<Health> NPCs = new List<Health>();
 
-    void Start()
+    /*void Start()
     {
         PlayerCharacterController[] _players = FindObjectsOfType<PlayerCharacterController>();
         EnemyCharacterController[] _enemies = FindObjectsOfType<EnemyCharacterController>();
@@ -17,7 +17,7 @@ public class BattleManager : MonoBehaviour
 
         foreach (EnemyCharacterController e in _enemies)
             NPCs.Add(e.GetComponent<Health>());
-    }
+    }*/
 
     /*public void AddPlayer(Health health)
     {

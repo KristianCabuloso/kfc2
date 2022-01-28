@@ -30,33 +30,32 @@ public class NextPlayersAnalytics : MonoBehaviour
         Vector3 _pos = transform.position;
         List<Health> closerPlayers = currentGroup.players;
 
+        float currentGroupTimeCount = Time.time - currentGroupStartTime;
+
         // Verificar se é necessário remover algum jogador do grupo se o tempo de troca de grupo passou
-        if (Time.time - currentGroupStartTime >= changeGroupTimeTolerance)
+        if (currentGroupTimeCount >= changeGroupTimeTolerance)
         {
             foreach (Health otherPlayer in closerPlayers)
             {
-                if (Vector3.Distance(_pos, otherPlayer.transform.position) > nextToPlayersMinimumDistance)
+                if (otherPlayer == null || Vector3.Distance(_pos, otherPlayer.transform.position) > nextToPlayersMinimumDistance)
                 {
                     // Iniciar um novo grupo
                     NextPlayersAnalyticsGroup newGroup = new NextPlayersAnalyticsGroup();
                     nextPlayersAnalyticsGroups.Add(newGroup);
-                    currentGroup.totalTime = Time.time - currentGroupStartTime;
-                    currentGroup.players = new List<Health>(closerPlayers);
+                    currentGroup.totalTime = currentGroupTimeCount;
                     currentGroup = newGroup;
                     currentGroupStartTime = Time.time;
-                    closerPlayers.Clear();
+                    closerPlayers = newGroup.players;
                     break;
                 }
             }
         }
-        else
+
+        // Verificar se há algum jogador próximo
+        foreach (Health otherPlayer in battleManager.players)
         {
-            // Verificar se há algum jogador próximo
-            foreach (Health otherPlayer in battleManager.players)
-            {
-                if (!closerPlayers.Contains(otherPlayer) && Vector3.Distance(_pos, otherPlayer.transform.position) <= nextToPlayersMinimumDistance)
-                    closerPlayers.Add(otherPlayer);
-            }
+            if (!closerPlayers.Contains(otherPlayer) && Vector3.Distance(_pos, otherPlayer.transform.position) <= nextToPlayersMinimumDistance)
+                closerPlayers.Add(otherPlayer);
         }
 
         // Se não houver jogadores próximos (após operações que add/rem jogadores à lista)
