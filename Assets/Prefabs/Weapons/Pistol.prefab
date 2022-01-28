@@ -49,6 +49,9 @@ MonoBehaviour:
   targetSprite: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
   maxAmmo: 1000
   ammo: 0
+  maxRecharges: 10
+  recharges: 0
+  infinityRecharge: 1
   shotCooldown: 0.1
   damage: 10
 --- !u!1 &4870018752517089051
@@ -278,7 +281,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 2a62a45868ba5cb27b1e11063b6edba6, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.7071067
+      value: 0.7071068
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 2a62a45868ba5cb27b1e11063b6edba6, type: 3}
       propertyPath: m_LocalRotation.x
@@ -290,11 +293,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 2a62a45868ba5cb27b1e11063b6edba6, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 2a62a45868ba5cb27b1e11063b6edba6, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
+      value: -90
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 2a62a45868ba5cb27b1e11063b6edba6, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y

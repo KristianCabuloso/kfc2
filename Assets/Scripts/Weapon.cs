@@ -9,6 +9,10 @@ public class Weapon : MonoBehaviour
     [SerializeField] int maxAmmo = 10;
     [Tooltip("ammo já inicia (Start()) com maxAmmo"), SerializeField]
     int ammo;
+    [SerializeField] int maxRecharges = 10;
+    [Tooltip("recharges já inicia (Start()) com maxRecharges"), SerializeField]
+    int recharges;
+    [SerializeField] bool infinityRecharge;
     [SerializeField] float shotCooldown = 1f;
     [SerializeField] int damage = 1;
 
@@ -19,6 +23,7 @@ public class Weapon : MonoBehaviour
     void Start()
     {
         ammo = maxAmmo;
+        recharges = maxRecharges;
     }
 
     void Update()
@@ -29,6 +34,9 @@ public class Weapon : MonoBehaviour
 
     public bool TryShoot()
     {
+        if (ammo <= 0)
+            Recharge();
+
         if (ammo > 0 && shotCooldownCount <= 0f)
         {
             ammo--;
@@ -37,5 +45,14 @@ public class Weapon : MonoBehaviour
         }
 
         return false;
+    }
+
+    void Recharge()
+    {
+        if (infinityRecharge || recharges > 0)
+        {
+            recharges--;
+            ammo = maxAmmo;
+        }
     }
 }
