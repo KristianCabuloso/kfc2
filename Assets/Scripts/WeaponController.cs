@@ -35,11 +35,20 @@ public class WeaponController : EntityBehaviour<IKFCPlayerState>
         {
             int _damage = weapon.Damage;
 
-            if (playerAnalytics && hitHealth.GetComponent<EnemyCharacterController>())
+            if (playerAnalytics)
             {
-                playerAnalytics.hittedEnemies++;
-                if (hitHealth.state.PlayerHealth - _damage <= 0)
-                    playerAnalytics.killedEnemies++;
+                if (hitHealth.ReviveController)
+                {
+                    playerAnalytics.hittedPlayers++;
+                    if (hitHealth.state.PlayerHealth - _damage <= 0)
+                        playerAnalytics.kodPlayers++;
+                }
+                else if (hitHealth.GetComponent<EnemyCharacterController>())
+                {
+                    playerAnalytics.hittedEnemies++;
+                    if (hitHealth.state.PlayerHealth - _damage <= 0)
+                        playerAnalytics.killedEnemies++;
+                }
             }
 
             hitHealth.ReceiveDamage(_damage);

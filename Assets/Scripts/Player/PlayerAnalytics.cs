@@ -19,6 +19,10 @@ public class PlayerAnalytics : MonoBehaviour
     [HideInInspector] public int hittedEnemies;
     [HideInInspector] public int killedEnemies;
 
+    [HideInInspector] public int hittedPlayers;
+    //[HideInInspector] public int killedPlayers;
+    [HideInInspector] public int kodPlayers;
+
     void Start()
     {
         startGameTime = Time.time;
@@ -50,6 +54,8 @@ public class PlayerAnalytics : MonoBehaviour
             { "Area onde passou mais tempo", mostTimeAreaName },
             { "Revivido por jogadores", revivedByPlayers },
             { "Reviveu jogadores", revivedPlayers },
+            { "Acerto em jogadores", hittedPlayers },
+            { "Nocauteou jogadores", kodPlayers },
             { "Acerto em inimigos", hittedEnemies },
             { "Matou inimigos", killedEnemies }
         });
