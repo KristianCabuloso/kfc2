@@ -19,6 +19,7 @@ public class PlayerReviveController : EntityBehaviour<IKFCPlayerState>
     public float timeToRevive = 5f;
     [Tooltip("Distância mínima para conseguir reviver outro jogador")]
     public float reviveDistance = 1.5f;
+    public Vector3 dieRotation;
 
     BattleManager battleManager;
     PlayerAnalytics playerAnalytics;
@@ -26,8 +27,7 @@ public class PlayerReviveController : EntityBehaviour<IKFCPlayerState>
     Health health;
 
     public ReviveState State { private set; get; }
-    public float DieCount { private set; get; }
-    public float ReviveCount { private set; get; }
+    public float Count { private set; get; }
     Health otherPlayerHealth;
 
     public override void Attached()
@@ -38,11 +38,13 @@ public class PlayerReviveController : EntityBehaviour<IKFCPlayerState>
 
         if (entity.IsOwner && playerAnalytics)
         {
+            battleManager.owner = health;
+
             reviveHud = FindObjectOfType<PlayerReviveHUD>();
             reviveHud.Setup(this);
         }
-            
-        state.OnPlayerRevive = Photon_Revive;
+
+        state.AddCallback("PlayerReviveEntity", OnReviveEntityChange);
     }
 
     void Update()
@@ -50,7 +52,7 @@ public class PlayerReviveController : EntityBehaviour<IKFCPlayerState>
         switch (State)
         {
             case ReviveState.Dying:
-                if (DieCount <= 0f)
+                if (Count <= 0f)
                 {
                     State = ReviveState.None;
                     state.PlayerIsDying = false;
@@ -59,23 +61,23 @@ public class PlayerReviveController : EntityBehaviour<IKFCPlayerState>
                 }
                 else
                 {
-                    DieCount -= Time.deltaTime;
+                    Count -= Time.deltaTime;
                 }
                 break;
 
             case ReviveState.Reviving:
-                if (ReviveCount <= 0f)
+                if (Count <= 0f)
                 {
                     if (playerAnalytics)
                         playerAnalytics.revivedPlayers++;
                     state.PlayerReviveEntity = otherPlayerHealth.entity;
-                    state.PlayerRevive();
+                    //state.PlayerRevive();
                     State = ReviveState.None;
                     reviveHud.Clear();
                 }
                 else
                 {
-                    ReviveCount -= Time.deltaTime;
+                    Count -= Time.deltaTime;
                 }
                 break;
         }
@@ -83,14 +85,25 @@ public class PlayerReviveController : EntityBehaviour<IKFCPlayerState>
 
     public void TriggerTimeToDie()
     {
-        DieCount = timeToDie;
+        Count = timeToDie;
+        transform.localEulerAngles = dieRotation;
         State = ReviveState.Dying;
         state.PlayerIsDying = true;
     }
 
-    public void ReceiveDamage()
+    // Retorna TRUE se recebeu dano (ou seja, está revivendo ou morrendo)
+    public bool TryReceiveDamage()
     {
-        DieCount -= Time.deltaTime * 2f;
+        switch (State)
+        {
+            case ReviveState.Dying:
+                Count -= Time.deltaTime * 2f; return true;
+
+            case ReviveState.Reviving:
+                Count += Time.deltaTime * 2f; return true;
+        }
+
+        return false;
     }
 
     public void Revive()
@@ -100,22 +113,39 @@ public class PlayerReviveController : EntityBehaviour<IKFCPlayerState>
         if (playerAnalytics)
             playerAnalytics.revivedByPlayers++;
         reviveHud.Clear();
+        transform.localEulerAngles = Vector3.zero;
         health.Revive();
     }
 
-    void Photon_Revive()
+    void OnReviveEntityChange()
     {
-        //Color color;
-
         BoltEntity _entity = state.PlayerReviveEntity;
-        if (_entity.IsOwner)
-            _entity.GetComponent<PlayerReviveController>().Revive();
+
+        if (_entity != null)
+        {
+            if (entity.IsOwner)
+            {
+                StartCoroutine(AnnulReviveEntityLater());
+                return;
+            }
+
+            Health _owner = battleManager.owner;
+
+            if (_entity == _owner.entity)
+                _owner.ReviveController.Revive();
+        }
     }
 
     /*public bool IsDying()
     {
         return State == ReviveState.Dying;
     }*/
+
+    IEnumerator AnnulReviveEntityLater()
+    {
+        yield return new WaitForSecondsRealtime(2f);
+        state.PlayerReviveEntity = null;
+    }
 
     public void Command_Revive()
     {
@@ -125,14 +155,13 @@ public class PlayerReviveController : EntityBehaviour<IKFCPlayerState>
         {
             if (Vector3.Distance(_pos, h.transform.position) <= reviveDistance)
             {
-                PlayerReviveController prc = h.GetComponent<PlayerReviveController>();
-                if (prc && prc.state.PlayerIsDying == true)
+                if (h.GetComponent<PlayerReviveController>() && h.state.PlayerIsDying)
                 {
                     otherPlayerHealth = h;
                     transform.LookAt(h.transform);
                     Vector3 _rot = transform.eulerAngles;
                     transform.eulerAngles = Vector3.up * _rot.y;
-                    ReviveCount = timeToRevive;
+                    Count = timeToRevive;
                     State = ReviveState.Reviving;
                     break;
                 }

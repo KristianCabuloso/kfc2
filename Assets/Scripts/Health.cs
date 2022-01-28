@@ -12,7 +12,7 @@ public class Health : EntityBehaviour<IKFCPlayerState>
     [SerializeField] float regenerationWaitTime = 0.5f;
     [SerializeField] float regenerationStartWaitTime = 5f;
 
-    PlayerReviveController reviveController;
+    public PlayerReviveController ReviveController { private set; get; }
     public int MaxHealth { get => maxHealth; }
 
     float regenerationStartCount;
@@ -27,7 +27,7 @@ public class Health : EntityBehaviour<IKFCPlayerState>
             if  (GetComponent<PlayerCharacterController>()) // Prevenir o bug de atribuir vida dos inimigos à HUD do servidor) 
             {
                 FindObjectOfType<HealthHUD>().Setup(this);
-                reviveController = GetComponent<PlayerReviveController>();
+                ReviveController = GetComponent<PlayerReviveController>();
             }
         }
     }
@@ -64,11 +64,8 @@ public class Health : EntityBehaviour<IKFCPlayerState>
             return;
 
         // Atrapalhar o jogador de reviver se ele estiver necessitando reviver
-        if (reviveController && reviveController.State == ReviveState.Dying)
-        {
-            reviveController.ReceiveDamage();
+        if (ReviveController && ReviveController.TryReceiveDamage())
             return;
-        }
 
         // Processo normal de perda de vida
 
@@ -83,9 +80,9 @@ public class Health : EntityBehaviour<IKFCPlayerState>
         // Se vida chegou a 0
         if (health == 0)
         {
-            if (reviveController)
+            if (ReviveController)
             {
-                reviveController.TriggerTimeToDie();
+                ReviveController.TriggerTimeToDie();
                 regenerationStartCount = Mathf.Infinity;
             }
             else

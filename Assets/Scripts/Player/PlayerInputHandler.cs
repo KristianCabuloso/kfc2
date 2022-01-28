@@ -42,7 +42,11 @@ public class PlayerInputHandler : MonoBehaviour
 
         playerActions.Jump.performed += ctx => playerCharacterController.Command_Jump();
 
-        playerActions.Move.performed += ctx => playerCharacterController.Command_Move(ctx.ReadValue<Vector2>());
+        playerActions.Move.performed += ctx => {
+            if (playerReviveController.State != ReviveState.Dying)
+                playerCharacterController.Command_Move(ctx.ReadValue<Vector2>());
+            playerReviveController.Command_CancelRevive();
+        };
         playerActions.Move.canceled += ctx => playerCharacterController.Command_CancelMove();
 
         playerActions.Run.performed += ctx => playerCharacterController.isRunning = true;

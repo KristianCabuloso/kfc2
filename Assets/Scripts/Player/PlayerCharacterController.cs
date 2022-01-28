@@ -66,6 +66,27 @@ public class PlayerCharacterController : EntityBehaviour<IKFCPlayerState>
 
         if (entity.IsOwner)
         {
+            /*while (true)
+            {
+                int randomId = Random.Range(int.MinValue, int.MaxValue);
+                bool foundEqualId = false;
+
+                foreach (Health h in battleManager.players)
+                {
+                    if (h.state.PlayerId == randomId)
+                    {
+                        foundEqualId = true;
+                        break;
+                    }
+                }
+
+                if (!foundEqualId)
+                {
+                    state.PlayerId = randomId;
+                    break;
+                }
+            }*/
+
             //WeaponController weaponController = GetComponent<WeaponController>();
             if (weaponController)
                 FindObjectOfType<WeaponHUD>().Setup(weaponController, playerHead);

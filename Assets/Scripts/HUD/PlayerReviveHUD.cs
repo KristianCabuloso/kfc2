@@ -34,13 +34,13 @@ public class PlayerReviveHUD : MonoBehaviour
         {
             case ReviveState.Dying:
                 _scale = dieBarRectTransform.localScale;
-                _scale.x = reviveController.DieCount / reviveController.timeToDie;
+                _scale.x = reviveController.Count / reviveController.timeToDie;
                 dieBarRectTransform.localScale = _scale;
                 break;
 
             case ReviveState.Reviving:
                 _scale = reviveBarRectTransform.localScale;
-                _scale.x = 1f - (reviveController.ReviveCount / reviveController.timeToRevive);
+                _scale.x = 1f - (reviveController.Count / reviveController.timeToRevive);
                 reviveBarRectTransform.localScale = _scale;
                 break;
         }
