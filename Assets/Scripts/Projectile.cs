@@ -14,6 +14,8 @@ public class Projectile : MonoBehaviour
     [SerializeField, Tooltip("Tempo para o projétil se autodestruir. <= 0 desabilita autodestruição")]
     float selfDestructTime = 5f;
 
+    [HideInInspector] public PlayerAnalytics playerAnalytics;
+
     public LayerMask LayerMask { private set => layerMask = value; get => layerMask; }
 
     /*Vector3 centerPosition;
@@ -47,11 +49,33 @@ public class Projectile : MonoBehaviour
 
         if (colliders.Length > 0)
         {
+            bool usingAnalytics = playerAnalytics != null;
+
             foreach (Collider c in colliders)
             {
                 Health h = c.GetComponentInParent<Health>();
-                if (h)
-                    h.ReceiveDamage(damage);
+                if (h && h.entity.IsAttached)
+                {
+                    bool killed = h.ReceiveDamage(damage);
+
+                    if (usingAnalytics)
+                    {
+                        if (h.ReviveController)
+                        {
+                            if (killed)
+                                playerAnalytics.kodPlayers++;
+
+                            playerAnalytics.hittedPlayers++;
+                        }
+                        else if (h.GetComponent<EnemyCharacterController>())
+                        {
+                            if (killed)
+                                playerAnalytics.killedEnemies++;
+
+                            playerAnalytics.hittedEnemies++;
+                        }
+                    }
+                }
             }
 
             Destroy(gameObject);

@@ -24,11 +24,10 @@ public class Health : EntityBehaviour<IKFCPlayerState>
         {
             state.PlayerHealth = maxHealth;
 
-            if  (GetComponent<PlayerCharacterController>()) // Prevenir o bug de atribuir vida dos inimigos à HUD do servidor) 
-            {
+            ReviveController = GetComponent<PlayerReviveController>();
+
+            if (ReviveController) // Prevenir o bug de atribuir vida dos inimigos à HUD do servidor
                 FindObjectOfType<HealthHUD>().Setup(this);
-                ReviveController = GetComponent<PlayerReviveController>();
-            }
         }
     }
 
@@ -57,15 +56,16 @@ public class Health : EntityBehaviour<IKFCPlayerState>
         }
     }
 
-    public void ReceiveDamage(int damage)
+    // Retorna TRUE se após receber dano teve vida == 0
+    public bool ReceiveDamage(int damage)
     {
         // Não rodar código se não for o dono (o Photon nem deixa)
         if (!entity.IsOwner)
-            return;
+            return false;
 
         // Atrapalhar o jogador de reviver se ele estiver necessitando reviver
         if (ReviveController && ReviveController.TryReceiveDamage())
-            return;
+            return false;
 
         // Processo normal de perda de vida
 
@@ -89,11 +89,13 @@ public class Health : EntityBehaviour<IKFCPlayerState>
             {
                 Die();
             }
+
+            return true;
         }
-        else
-        {
-            regenerationStartCount = regenerationStartWaitTime;
-        }
+
+        regenerationStartCount = regenerationStartWaitTime;
+       
+        return false;
     }
 
     public void Revive()

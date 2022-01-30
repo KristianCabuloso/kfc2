@@ -148,7 +148,6 @@ public class EnemyCharacterController : EntityBehaviour<IKFCPlayerState>
 
         foreach (Health h in battleManager.players)
         {
-            print(h.name);
             float dist = Vector3.Distance(_position, h.transform.position);
             if (dist < closerDistance)
             {

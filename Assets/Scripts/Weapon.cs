@@ -54,10 +54,12 @@ public class Weapon : MonoBehaviour
         return false;
     }
 
-    public void Shoot(Transform shotPoint)
+    public void Shoot(Transform shotPoint, PlayerAnalytics playerAnalytics = null)
     {
         Vector3 _position = shotPoint.position;
         Vector3 _rotation = shotPoint.eulerAngles;
+
+        bool canUsePlayerAnalytics = playerAnalytics != null;
 
         /*Vector3 spForward = shotPoint.forward;
         Vector3 forwardAxis = new Vector3(spForward.y, spForward.x, 0f);*/
@@ -65,7 +67,9 @@ public class Weapon : MonoBehaviour
         for (float i = -spawnBulletConsumeAmount / 2f; i < spawnBulletConsumeAmount / 2f; i++)
         {
             //Vector3 _rot = _rotation + (forwardAxis * i);
-            Instantiate(projectile, _position, Quaternion.Euler(_rotation + Vector3.up * i));
+            Projectile p = Instantiate(projectile, _position, Quaternion.Euler(_rotation + Vector3.up * i));
+            if (canUsePlayerAnalytics)
+                p.playerAnalytics = playerAnalytics;
         }
     }
 
