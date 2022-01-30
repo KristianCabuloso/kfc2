@@ -30,7 +30,7 @@ public class WeaponController : EntityBehaviour<IKFCPlayerState>
 
     void Photon_Shoot()
     {
-        weapon.Shoot(shotPoint.position, shotPoint.rotation);
+        weapon.Shoot(shotPoint);
         /*print("ATIROU");
         Health hitHealth = GetForwardRaycastHitHealth(state.PlayerShotDirection);
         if (hitHealth)

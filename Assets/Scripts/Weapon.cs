@@ -12,6 +12,8 @@ public class Weapon : MonoBehaviour
     [SerializeField] int maxRecharges = 10;
     [Tooltip("recharges já inicia (Start()) com maxRecharges"), SerializeField]
     int recharges;
+    [SerializeField] int spawnBulletConsumeAmount = 1;
+    [SerializeField] int bulletConsumeAmount = 1;
     [SerializeField] bool infinityRecharge;
     [SerializeField] float shotCooldown = 1f;
     [SerializeField] Projectile projectile;
@@ -38,12 +40,13 @@ public class Weapon : MonoBehaviour
 
     public bool TryConsumeShot()
     {
-        if (ammo <= 0)
+        if (ammo == 0)
             Recharge();
 
         if (ammo > 0 && shotCooldownCount <= 0f)
         {
-            ammo--;
+            ammo -= bulletConsumeAmount;
+            ammo = Mathf.Max(0, ammo);
             shotCooldownCount = shotCooldown;
             return true;
         }
@@ -51,9 +54,19 @@ public class Weapon : MonoBehaviour
         return false;
     }
 
-    public void Shoot(Vector3 _position, Quaternion _rotation)
+    public void Shoot(Transform shotPoint)
     {
-        Instantiate(projectile, _position, _rotation);
+        Vector3 _position = shotPoint.position;
+        Vector3 _rotation = shotPoint.eulerAngles;
+
+        /*Vector3 spForward = shotPoint.forward;
+        Vector3 forwardAxis = new Vector3(spForward.y, spForward.x, 0f);*/
+
+        for (float i = -spawnBulletConsumeAmount / 2f; i < spawnBulletConsumeAmount / 2f; i++)
+        {
+            //Vector3 _rot = _rotation + (forwardAxis * i);
+            Instantiate(projectile, _position, Quaternion.Euler(_rotation + Vector3.up * i));
+        }
     }
 
     void Recharge()
