@@ -5,10 +5,11 @@ using Photon.Bolt;
 
 public class WeaponController : EntityBehaviour<IKFCPlayerState>
 {
-    [SerializeField] Transform shotRaycastPoint;
-    [SerializeField] LayerMask shotLayerMask;
+    //[SerializeField] Transform shotRaycastPoint;
+    //[SerializeField] LayerMask shotLayerMask;
     [SerializeField] Transform weaponHolder;
     [SerializeField] Weapon[] initialWeapons;
+    [SerializeField] Transform shotPoint;
 
     PlayerAnalytics playerAnalytics;
 
@@ -23,13 +24,14 @@ public class WeaponController : EntityBehaviour<IKFCPlayerState>
 
     public override void Attached()
     {
-        state.OnPlayerShoot = Shoot;
+        state.OnPlayerShoot = Photon_Shoot;
         playerAnalytics = GetComponent<PlayerAnalytics>();
     }
 
-    void Shoot()
+    void Photon_Shoot()
     {
-        print("ATIROU");
+        weapon.Shoot(shotPoint.position, shotPoint.rotation);
+        /*print("ATIROU");
         Health hitHealth = GetForwardRaycastHitHealth(state.PlayerShotDirection);
         if (hitHealth)
         {
@@ -53,29 +55,26 @@ public class WeaponController : EntityBehaviour<IKFCPlayerState>
 
             hitHealth.ReceiveDamage(_damage);
             print(hitHealth.name + " TOMOU " + _damage + " DANO");
-        }
+        }*/
     }
 
-    public void TryShoot(Vector3 forward)
+    public void TryShoot()
     {
-        if (weapon.TryShoot())
+        if (weapon.TryConsumeShot())
         {
-            state.PlayerShotDirection = forward;
+            //state.PlayerShotDirection = forward;
             state.PlayerShoot();
         }
     }
 
-    public Health GetForwardRaycastHitHealth(Vector3 forward)
+    public bool CheckForwardTargetHealth()
     {
         RaycastHit hit;
-        if (Physics.Raycast(shotRaycastPoint.position, forward, out hit, float.PositiveInfinity, shotLayerMask))
-            return hit.transform.GetComponentInParent<Health>();
-
-        return null;
+        return Physics.Raycast(shotPoint.position, shotPoint.forward, out hit, float.PositiveInfinity, weapon.Projectile.LayerMask);
     }
 
-    void OnDrawGizmos()
+    /*void OnDrawGizmos()
     {
         Gizmos.DrawRay(shotRaycastPoint.position, transform.forward);
-    }
+    }*/
 }

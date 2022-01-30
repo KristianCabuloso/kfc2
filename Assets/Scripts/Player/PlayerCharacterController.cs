@@ -89,7 +89,8 @@ public class PlayerCharacterController : EntityBehaviour<IKFCPlayerState>
 
             //WeaponController weaponController = GetComponent<WeaponController>();
             if (weaponController)
-                FindObjectOfType<WeaponHUD>().Setup(weaponController, playerHead);
+                FindObjectOfType<WeaponHUD>().Setup(weaponController);
+            //FindObjectOfType<WeaponHUD>().Setup(weaponController, playerHead);
 
             PlayerInputHandler inputHandler = GetComponent<PlayerInputHandler>();
             if (inputHandler)
@@ -120,7 +121,7 @@ public class PlayerCharacterController : EntityBehaviour<IKFCPlayerState>
         }
 
         Health health = GetComponent<Health>();
-        if (health && !entity.IsOwner)
+        if (health && (!entity.IsOwner || BoltNetwork.IsServer))
             battleManager.players.Add(health);
     }
 
@@ -218,7 +219,7 @@ public class PlayerCharacterController : EntityBehaviour<IKFCPlayerState>
     public void Command_Fire()
     {
         if (weaponController)
-            weaponController.TryShoot(playerHead.forward);
+            weaponController.TryShoot();
     }
 
     public override void Detached()

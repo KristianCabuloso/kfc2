@@ -14,9 +14,13 @@ public class Weapon : MonoBehaviour
     int recharges;
     [SerializeField] bool infinityRecharge;
     [SerializeField] float shotCooldown = 1f;
-    [SerializeField] int damage = 1;
+    [SerializeField] Projectile projectile;
 
-    public int Damage { private set => damage = value;  get => damage; }
+    public Projectile Projectile { private set => projectile = value; get => projectile; }
+    //[SerializeField] Transform shotPoint;
+    //[SerializeField] int damage = 1;
+
+    //public int Damage { private set => damage = value;  get => damage; }
 
     float shotCooldownCount;
 
@@ -32,7 +36,7 @@ public class Weapon : MonoBehaviour
             shotCooldownCount -= Time.deltaTime;
     }
 
-    public bool TryShoot()
+    public bool TryConsumeShot()
     {
         if (ammo <= 0)
             Recharge();
@@ -45,6 +49,11 @@ public class Weapon : MonoBehaviour
         }
 
         return false;
+    }
+
+    public void Shoot(Vector3 _position, Quaternion _rotation)
+    {
+        Instantiate(projectile, _position, _rotation);
     }
 
     void Recharge()

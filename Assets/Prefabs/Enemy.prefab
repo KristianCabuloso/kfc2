@@ -24,11 +24,42 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1155563850792007150}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0.72}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 2010939830004270911}
   m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &3801007893832875105
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1821610769518367910}
+  m_Layer: 8
+  m_Name: Head
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1821610769518367910
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3801007893832875105}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 876080360863660165}
+  m_Father: {fileID: 2010939830004270911}
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &4038259860148242200
 GameObject:
@@ -167,7 +198,7 @@ GameObject:
   m_Layer: 8
   m_Name: ShotPoint
   m_TagString: Untagged
-  m_Icon: {fileID: 0}
+  m_Icon: {fileID: 1206586993520771344, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -178,12 +209,12 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4784673136008789902}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0.536}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0.70999986}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 2010939830004270911}
-  m_RootOrder: 3
+  m_Father: {fileID: 1821610769518367910}
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &8526222061182378213
 GameObject:
@@ -197,8 +228,8 @@ GameObject:
   - component: {fileID: 4709119224398429911}
   - component: {fileID: 8829918559154818705}
   - component: {fileID: 3446607698249055527}
-  - component: {fileID: 2423336982775313074}
   - component: {fileID: 2067004125288299435}
+  - component: {fileID: 4340147653712512979}
   m_Layer: 8
   m_Name: Enemy
   m_TagString: Untagged
@@ -220,7 +251,7 @@ Transform:
   - {fileID: 2895902424661955006}
   - {fileID: 276958977030434898}
   - {fileID: 5085846901815633391}
-  - {fileID: 876080360863660165}
+  - {fileID: 1821610769518367910}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -240,6 +271,7 @@ MonoBehaviour:
   gravity: -9.81
   startFightDistance: 5
   followTargetToShotDistance: 5
+  enemyHead: {fileID: 1821610769518367910}
   baseTransform: {fileID: 0}
   groundCheck: {fileID: 5085846901815633391}
   groundDistance: 0.4
@@ -293,25 +325,6 @@ MonoBehaviour:
   _entityBehaviourQueryOption: 0
   _entityPriorityCalculatorQueryOption: 1
   _entityReplicationFilterQueryOption: 1
---- !u!114 &2423336982775313074
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8526222061182378213}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dddb7e09cd9c0f5c0abd45e530cdf20a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  shotRaycastPoint: {fileID: 876080360863660165}
-  shotLayerMask:
-    serializedVersion: 2
-    m_Bits: 128
-  weaponHolder: {fileID: 276958977030434898}
-  initialWeapons:
-  - {fileID: 610932390378008527, guid: aa9fa0a0bbbcb18a9be1121297b7f3b5, type: 3}
 --- !u!114 &2067004125288299435
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -328,3 +341,19 @@ MonoBehaviour:
   regenerationAmount: 2
   regenerationWaitTime: 0.5
   regenerationStartWaitTime: 5
+--- !u!114 &4340147653712512979
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8526222061182378213}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dddb7e09cd9c0f5c0abd45e530cdf20a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  weaponHolder: {fileID: 276958977030434898}
+  initialWeapons:
+  - {fileID: 610932390378008527, guid: aa9fa0a0bbbcb18a9be1121297b7f3b5, type: 3}
+  shotPoint: {fileID: 876080360863660165}
