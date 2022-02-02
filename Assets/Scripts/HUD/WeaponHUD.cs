@@ -10,12 +10,12 @@ public class WeaponHUD : MonoBehaviour
     [SerializeField] Image targetImage;
 
     WeaponController playerWeaponController;
-    Transform playerLookTransform;
+    //Transform playerLookTransform;
 
-    public void Setup(WeaponController playerWeaponController, Transform playerLookTransform)
+    public void Setup(WeaponController playerWeaponController/*, Transform playerLookTransform*/)
     {
         this.playerWeaponController = playerWeaponController;
-        this.playerLookTransform = playerLookTransform;
+        //this.playerLookTransform = playerLookTransform;
         //playerLookTransform = playerWeaponController.GetComponentInChildren<CameraLook>().transform;
 
         targetImage.sprite = playerWeaponController.CurrentWeapon.targetSprite;
@@ -26,7 +26,7 @@ public class WeaponHUD : MonoBehaviour
         if (!playerWeaponController)
             return;
             
-        if (playerWeaponController.GetForwardRaycastHitHealth(playerLookTransform.forward))
+        if (playerWeaponController.CheckForwardTargetHealth())
         {
             targetImage.color = hasTargetColor;
         }

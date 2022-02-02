@@ -11,17 +11,24 @@ public class Health : EntityBehaviour<IKFCPlayerState>
     [SerializeField] int regenerationAmount = 2;
     [SerializeField] float regenerationWaitTime = 0.5f;
     [SerializeField] float regenerationStartWaitTime = 5f;
+
+    public PlayerReviveController ReviveController { private set; get; }
     public int MaxHealth { get => maxHealth; }
 
-    [SerializeField] float regenerationStartCount;
-    [SerializeField] float regenerationCount;
+    float regenerationStartCount;
+    float regenerationCount;
 
     public override void Attached()
     {
-        state.PlayerHealth = maxHealth;
+        if (entity.IsOwner)
+        {
+            state.PlayerHealth = maxHealth;
 
-        if (entity.IsOwner && GetComponent<PlayerCharacterController>()) // Prevenir o bug de atribuir vida dos inimigos à HUD do servidor
-            FindObjectOfType<HealthHUD>().Setup(this);
+            ReviveController = GetComponent<PlayerReviveController>();
+
+            if (ReviveController) // Prevenir o bug de atribuir vida dos inimigos à HUD do servidor
+                FindObjectOfType<HealthHUD>().Setup(this);
+        }
     }
 
     public override void SimulateOwner()
@@ -49,36 +56,62 @@ public class Health : EntityBehaviour<IKFCPlayerState>
         }
     }
 
-    public void ReceiveDamage(int damage)
+    // Retorna TRUE se após receber dano teve vida == 0
+    public bool ReceiveDamage(int damage)
     {
+        // Não rodar código se não for o dono (o Photon nem deixa)
+        if (!entity.IsOwner)
+            return false;
+
+        // Atrapalhar o jogador de reviver se ele estiver necessitando reviver
+        if (ReviveController && ReviveController.TryReceiveDamage())
+            return false;
+
+        // Processo normal de perda de vida
+
         int health = state.PlayerHealth;
 
         health -= damage; // Perder vida
-        bool zeroHealthFlag = health <= 0; // Ativar flag de vida zerada
-
-        // Se vida chegou a 0
-        if (zeroHealthFlag)
-        {
-            health = Mathf.Max(health, 0);
-
-            // Chamar game over se o jogador for do atual cliente
-            if (entity.IsOwner)
-            {
-                // TODO Alguma condição especial caso o jogador do cliente morra aqui
-            }
-
-            regenerationStartCount = Mathf.Infinity;
-        }
-        else
-        {
-            regenerationStartCount = regenerationStartWaitTime;
-        }
+        health = Mathf.Max(health, 0); // Impedir que a vida fique menor que 0
 
         // Atualizar a vida online com a vida modificada
         state.PlayerHealth = health;
 
+        // Se vida chegou a 0
+        if (health == 0)
+        {
+            if (ReviveController)
+            {
+                ReviveController.TriggerTimeToDie();
+                regenerationStartCount = Mathf.Infinity;
+            }
+            else
+            {
+                Die();
+            }
+
+            return true;
+        }
+
+        regenerationStartCount = regenerationStartWaitTime;
+       
+        return false;
+    }
+
+    public void Revive()
+    {
+        state.PlayerHealth = Mathf.RoundToInt(maxHealth * 0.3f);
+        regenerationStartCount = regenerationStartWaitTime / 2f;
+    }
+
+    public void Die()
+    {
+        // Enviar analytics de morte se for jogador
+        PlayerAnalytics playerAnalytics = GetComponent<PlayerAnalytics>();
+        if (playerAnalytics)
+            playerAnalytics.SendDieAnalytics();
+
         // Destruir objeto pelo Bolt se a vida foi zerada
-        if (zeroHealthFlag)
-            BoltNetwork.Destroy(gameObject);
+        BoltNetwork.Destroy(gameObject);
     }
 }

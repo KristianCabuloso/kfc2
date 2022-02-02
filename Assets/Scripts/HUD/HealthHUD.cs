@@ -23,7 +23,6 @@ public class HealthHUD : MonoBehaviour
 
     public void Setup(Health playerHealth)
     {
-        print(">>>>> ATRIBUIU NA HEALTHHUD:" + playerHealth.name);
         this.playerHealth = playerHealth;
 
         playerHealth.state.AddCallback("PlayerHealth", OnHealthChange);
@@ -33,7 +32,6 @@ public class HealthHUD : MonoBehaviour
     {
         int healthAmount = playerHealth.state.PlayerHealth;
         float healthPercentage = (float)healthAmount / playerHealth.MaxHealth;
-        print(">>>HEALTH_PERCENTAGE => " + healthPercentage.ToString());
 
         Vector3 _scale = healthImageTransform.localScale;
         _scale.x = healthPercentage;

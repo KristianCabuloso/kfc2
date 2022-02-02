@@ -46,5 +46,8 @@ MonoBehaviour:
   targetSprite: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
   maxAmmo: 1000
   ammo: 0
+  maxRecharges: 10
+  recharges: 0
+  infinityRecharge: 1
   shotCooldown: 0.1
-  damage: 1
+  projectile: {fileID: 9196423441799094773, guid: b45e7feeac4db66a3b8289ba40c1ea52, type: 3}

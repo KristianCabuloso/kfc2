@@ -28,6 +28,7 @@ public class EnemyCharacterController : EntityBehaviour<IKFCPlayerState>
     public float startFightDistance = 1f;
     public float followTargetToShotDistance = 5f;
     //public float fleeTargetDistance = 1f;
+    [SerializeField] Transform enemyHead;
     public Transform baseTransform;
 
     public Transform groundCheck; //usado para armazenar a posi??o do groundCheck no jogo
@@ -44,6 +45,8 @@ public class EnemyCharacterController : EntityBehaviour<IKFCPlayerState>
     {
         // Setar o transform do Bolt (online)
         state.SetTransforms(state.PlayerTransform, transform);
+        state.SetTransforms(state.PlayerHeadTransform, enemyHead);
+
         battleManager = FindObjectOfType<BattleManager>();
 
         Health health = GetComponent<Health>();
@@ -94,9 +97,12 @@ public class EnemyCharacterController : EntityBehaviour<IKFCPlayerState>
         Transform targetTransform = target.transform;
 
         transform.LookAt(targetTransform);
-        Vector3 oldForward = transform.forward;
+
+        //Vector3 oldForward = transform.forward;
         Vector3 _rot = transform.eulerAngles;
         transform.eulerAngles = Vector3.up * _rot.y;
+
+        enemyHead.LookAt(targetTransform);
 
         //Vector3 _forward = transform.forward;
 
@@ -115,7 +121,7 @@ public class EnemyCharacterController : EntityBehaviour<IKFCPlayerState>
         }
         else
         {
-            weaponController.TryShoot(oldForward);
+            weaponController.TryShoot();
         }
     }
 
@@ -142,7 +148,6 @@ public class EnemyCharacterController : EntityBehaviour<IKFCPlayerState>
 
         foreach (Health h in battleManager.players)
         {
-            print(h.name);
             float dist = Vector3.Distance(_position, h.transform.position);
             if (dist < closerDistance)
             {
@@ -166,6 +171,7 @@ public class EnemyCharacterController : EntityBehaviour<IKFCPlayerState>
         if (health)
             battleManager.NPCs.Remove(health);
     }
+
     /*void Update()
     {
         transform.Translate(Vector3.forward * walkingSpeed * Time.deltaTime);

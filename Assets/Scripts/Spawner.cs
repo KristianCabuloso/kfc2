@@ -47,8 +47,8 @@ public class Spawner : GlobalEventListener
             currentWave++;
             RefreshAndSendEvent();
             //waveHud.RefreshTextString(currentWave);
-            
-            for (int i = 0; i < spawnObjectLenght * battleManager.players.Count * currentWave; i++)
+
+            for (int i = 0; i < spawnObjectLenght * (battleManager.players.Count + 1) * currentWave; i++)
             {
                 GameObject spawned = BoltNetwork.Instantiate(spawnObject, transform.position + (Vector3.left * 3.5f * i), Quaternion.identity);
                 EnemyCharacterController enemy = spawned.GetComponent<EnemyCharacterController>();

@@ -66,9 +66,31 @@ public class PlayerCharacterController : EntityBehaviour<IKFCPlayerState>
 
         if (entity.IsOwner)
         {
+            /*while (true)
+            {
+                int randomId = Random.Range(int.MinValue, int.MaxValue);
+                bool foundEqualId = false;
+
+                foreach (Health h in battleManager.players)
+                {
+                    if (h.state.PlayerId == randomId)
+                    {
+                        foundEqualId = true;
+                        break;
+                    }
+                }
+
+                if (!foundEqualId)
+                {
+                    state.PlayerId = randomId;
+                    break;
+                }
+            }*/
+
             //WeaponController weaponController = GetComponent<WeaponController>();
             if (weaponController)
-                FindObjectOfType<WeaponHUD>().Setup(weaponController, playerHead);
+                FindObjectOfType<WeaponHUD>().Setup(weaponController);
+            //FindObjectOfType<WeaponHUD>().Setup(weaponController, playerHead);
 
             PlayerInputHandler inputHandler = GetComponent<PlayerInputHandler>();
             if (inputHandler)
@@ -88,13 +110,18 @@ public class PlayerCharacterController : EntityBehaviour<IKFCPlayerState>
             Camera _camera = GetComponentInChildren<Camera>();
             if (_camera)
                 _camera.gameObject.SetActive(false);
-                
+
+            // Destruir script que envia dados de telemetria, pois apenas o próprio cliente pode enviá-los
+            PlayerAnalytics playerAnalytics = GetComponent<PlayerAnalytics>();
+            if (playerAnalytics)
+                Destroy(playerAnalytics);
+
             /*if (inputHandler)
                 Destroy(inputHandler);*/
         }
 
         Health health = GetComponent<Health>();
-        if (health)
+        if (health && (!entity.IsOwner || BoltNetwork.IsServer))
             battleManager.players.Add(health);
     }
 
@@ -191,7 +218,8 @@ public class PlayerCharacterController : EntityBehaviour<IKFCPlayerState>
 
     public void Command_Fire()
     {
-        weaponController.TryShoot(playerHead.forward);
+        if (weaponController)
+            weaponController.TryShoot();
     }
 
     public override void Detached()

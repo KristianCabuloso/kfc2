@@ -5,10 +5,13 @@ using Photon.Bolt;
 
 public class WeaponController : EntityBehaviour<IKFCPlayerState>
 {
-    [SerializeField] Transform shotRaycastPoint;
-    [SerializeField] LayerMask shotLayerMask;
+    //[SerializeField] Transform shotRaycastPoint;
+    //[SerializeField] LayerMask shotLayerMask;
     [SerializeField] Transform weaponHolder;
     [SerializeField] Weapon[] initialWeapons;
+    [SerializeField] Transform shotPoint;
+
+    PlayerAnalytics playerAnalytics;
 
     Weapon weapon;
     public Weapon CurrentWeapon { get => weapon; }
@@ -21,40 +24,57 @@ public class WeaponController : EntityBehaviour<IKFCPlayerState>
 
     public override void Attached()
     {
-        state.OnPlayerShoot = Shoot;
+        state.OnPlayerShoot = Photon_Shoot;
+        playerAnalytics = GetComponent<PlayerAnalytics>();
     }
 
-    void Shoot()
+    void Photon_Shoot()
     {
-        print("ATIROU");
+        weapon.Shoot(shotPoint);
+        /*print("ATIROU");
         Health hitHealth = GetForwardRaycastHitHealth(state.PlayerShotDirection);
         if (hitHealth)
         {
-            hitHealth.ReceiveDamage(weapon.Damage);
-            print(hitHealth.name + " TOMOU " + weapon.Damage + " DANO");
-        }
+            int _damage = weapon.Damage;
+
+            if (playerAnalytics)
+            {
+                if (hitHealth.ReviveController)
+                {
+                    playerAnalytics.hittedPlayers++;
+                    if (hitHealth.state.PlayerHealth - _damage <= 0)
+                        playerAnalytics.kodPlayers++;
+                }
+                else if (hitHealth.GetComponent<EnemyCharacterController>())
+                {
+                    playerAnalytics.hittedEnemies++;
+                    if (hitHealth.state.PlayerHealth - _damage <= 0)
+                        playerAnalytics.killedEnemies++;
+                }
+            }
+
+            hitHealth.ReceiveDamage(_damage);
+            print(hitHealth.name + " TOMOU " + _damage + " DANO");
+        }*/
     }
 
-    public void TryShoot(Vector3 forward)
+    public void TryShoot()
     {
-        if (weapon.TryShoot())
+        if (weapon.TryConsumeShot())
         {
-            state.PlayerShotDirection = forward;
+            //state.PlayerShotDirection = forward;
             state.PlayerShoot();
         }
     }
 
-    public Health GetForwardRaycastHitHealth(Vector3 forward)
+    public bool CheckForwardTargetHealth()
     {
         RaycastHit hit;
-        if (Physics.Raycast(shotRaycastPoint.position, forward, out hit, float.PositiveInfinity, shotLayerMask))
-            return hit.transform.GetComponentInParent<Health>();
-
-        return null;
+        return Physics.Raycast(shotPoint.position, shotPoint.forward, out hit, float.PositiveInfinity, weapon.Projectile.LayerMask);
     }
 
-    void OnDrawGizmos()
+    /*void OnDrawGizmos()
     {
         Gizmos.DrawRay(shotRaycastPoint.position, transform.forward);
-    }
+    }*/
 }

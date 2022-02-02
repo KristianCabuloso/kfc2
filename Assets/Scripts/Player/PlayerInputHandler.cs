@@ -2,11 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(PlayerCharacterController), typeof(WeaponController))]
+[RequireComponent(typeof(PlayerCharacterController), typeof(WeaponController), typeof(PlayerReviveController))]
+[RequireComponent(typeof(PlayerReviveController))]
 public class PlayerInputHandler : MonoBehaviour
 {
     PlayerCharacterController playerCharacterController;
     WeaponController weaponController;
+    PlayerReviveController playerReviveController;
     //CameraLook playerCameraLook;
     public PlayerInputAction Input { private set; get; }
 
@@ -22,6 +24,7 @@ public class PlayerInputHandler : MonoBehaviour
     {
         playerCharacterController = GetComponent<PlayerCharacterController>();
         weaponController = GetComponent<WeaponController>();
+        playerReviveController = GetComponent<PlayerReviveController>();
         //playerCameraLook = GetComponentInChildren<CameraLook>();
     }
 
@@ -39,14 +42,21 @@ public class PlayerInputHandler : MonoBehaviour
 
         playerActions.Jump.performed += ctx => playerCharacterController.Command_Jump();
 
-        playerActions.Move.performed += ctx => playerCharacterController.Command_Move(ctx.ReadValue<Vector2>());
+        playerActions.Move.performed += ctx => {
+            if (playerReviveController.State != ReviveState.Dying)
+                playerCharacterController.Command_Move(ctx.ReadValue<Vector2>());
+            playerReviveController.Command_CancelRevive();
+        };
         playerActions.Move.canceled += ctx => playerCharacterController.Command_CancelMove();
 
         playerActions.Run.performed += ctx => playerCharacterController.isRunning = true;
         playerActions.Run.canceled += ctx => playerCharacterController.isRunning = false;
 
-        playerActions.Fire.performed += ctx => playerCharacterController.Command_Fire();//Command_Fire();
+        playerActions.Fire.performed += ctx => playerCharacterController.Command_Fire();
         //playerActions.Run.performed += Command_Run;
+
+        playerActions.Revive.performed += ctx => playerReviveController.Command_Revive();
+        playerActions.Revive.canceled += ctx => playerReviveController.Command_CancelRevive();
 
         Input.Enable();
     }
