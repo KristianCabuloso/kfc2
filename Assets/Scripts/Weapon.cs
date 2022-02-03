@@ -71,6 +71,8 @@ public class Weapon : MonoBehaviour
             if (canUsePlayerAnalytics)
                 p.playerAnalytics = playerAnalytics;
         }
+
+        playerAnalytics.shotsMade += spawnBulletConsumeAmount;
     }
 
     void Recharge()

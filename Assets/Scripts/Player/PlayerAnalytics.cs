@@ -16,6 +16,11 @@ public class PlayerAnalytics : MonoBehaviour
     [HideInInspector] public int revivedPlayers;
     [HideInInspector] public int revivedByPlayers;
 
+    [HideInInspector] public int kodByPlayers;
+    [HideInInspector] public int kodByEnemies;
+
+    [HideInInspector] public int shotsMade;
+
     [HideInInspector] public int hittedEnemies;
     [HideInInspector] public int killedEnemies;
 
@@ -47,6 +52,8 @@ public class PlayerAnalytics : MonoBehaviour
     {
         RefreshToNewMosTimeArea();
 
+        int missShots = shotsMade - hittedPlayers - hittedEnemies;
+
         AnalyticsResult result = Analytics.CustomEvent(eventName, new Dictionary<string, object>()
         {
             { "Posicao", transform.position },
@@ -54,8 +61,11 @@ public class PlayerAnalytics : MonoBehaviour
             { "Area onde passou mais tempo", mostTimeAreaName },
             { "Revivido por jogadores", revivedByPlayers },
             { "Reviveu jogadores", revivedPlayers },
+            { "Nocauteado por jogadores", kodByPlayers },
+            { "Nocauteado por inimigos", kodByEnemies },
+            { "Tiros nao acertados", missShots },
             { "Acerto em jogadores", hittedPlayers },
-            { "Nocauteou jogadores", kodPlayers },
+            { "Nocaute em jogadores", kodPlayers },
             { "Acerto em inimigos", hittedEnemies },
             { "Matou inimigos", killedEnemies }
         });

@@ -15,6 +15,8 @@ public class Health : EntityBehaviour<IKFCPlayerState>
     public PlayerReviveController ReviveController { private set; get; }
     public int MaxHealth { get => maxHealth; }
 
+    PlayerAnalytics playerAnalytics;
+
     float regenerationStartCount;
     float regenerationCount;
 
@@ -25,6 +27,7 @@ public class Health : EntityBehaviour<IKFCPlayerState>
             state.PlayerHealth = maxHealth;
 
             ReviveController = GetComponent<PlayerReviveController>();
+            playerAnalytics = GetComponent<PlayerAnalytics>();
 
             if (ReviveController) // Prevenir o bug de atribuir vida dos inimigos à HUD do servidor
                 FindObjectOfType<HealthHUD>().Setup(this);
@@ -57,7 +60,7 @@ public class Health : EntityBehaviour<IKFCPlayerState>
     }
 
     // Retorna TRUE se após receber dano teve vida == 0
-    public bool ReceiveDamage(int damage)
+    public bool ReceiveDamage(int damage, bool damageFromPlayer)
     {
         // Não rodar código se não for o dono (o Photon nem deixa)
         if (!entity.IsOwner)
@@ -80,6 +83,18 @@ public class Health : EntityBehaviour<IKFCPlayerState>
         // Se vida chegou a 0
         if (health == 0)
         {
+            if (playerAnalytics)
+            {
+                if (damageFromPlayer)
+                {
+                    playerAnalytics.kodByPlayers++;
+                }
+                else
+                {
+                    playerAnalytics.kodByEnemies++;
+                }
+            }
+
             if (ReviveController)
             {
                 ReviveController.TriggerTimeToDie();
