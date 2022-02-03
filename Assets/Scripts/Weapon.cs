@@ -6,6 +6,8 @@ using UnityEngine;
 public class Weapon : MonoBehaviour
 {
     public Sprite targetSprite;
+    public Animator animator;
+    public string attackAnimationTrigger = "Attack";
     [SerializeField] int maxAmmo = 10;
     [Tooltip("ammo já inicia (Start()) com maxAmmo"), SerializeField]
     int ammo;
@@ -72,7 +74,11 @@ public class Weapon : MonoBehaviour
                 p.playerAnalytics = playerAnalytics;
         }
 
-        playerAnalytics.shotsMade += spawnBulletConsumeAmount;
+        if (canUsePlayerAnalytics)
+            playerAnalytics.shotsMade += spawnBulletConsumeAmount;
+
+        if (animator)
+            animator.SetTrigger(attackAnimationTrigger);
     }
 
     void Recharge()

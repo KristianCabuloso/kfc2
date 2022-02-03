@@ -11,12 +11,14 @@ public class PlayerCharacterController : EntityBehaviour<IKFCPlayerState>
     CharacterController controller; //cria uma variavel para podermos armazenar o CharacterController
     WeaponController weaponController;
     PlayerInputAction input;
+    Animator animator;
 
     private float speed = 12f; // Define a velocidade atual do jogador
     public float walkingSpeed = 12f; // Define a velocidade do jogador andando
     public float runningSpeed = 24f; // Define a velocidade do jogador correndo
     public float gravity = -9.81f; //For?a da gravidade
     public float jumpHeight = 2f;
+    public string animationSpeedFloatParameterName = "MoveSpeed";
 
     [SerializeField, Tooltip("Cabeça do jogador que se moverá com a câmera")]
     Transform playerHead;
@@ -36,6 +38,7 @@ public class PlayerCharacterController : EntityBehaviour<IKFCPlayerState>
     private void Start()
     {
         controller = GetComponent<CharacterController>();
+        animator = GetComponentInChildren<Animator>();
         //weaponController = GetComponent<WeaponController>();
         //input = GetComponent<PlayerInputHandler>().Input;
 
@@ -153,6 +156,9 @@ public class PlayerCharacterController : EntityBehaviour<IKFCPlayerState>
         {
             speed = walkingSpeed;
         }
+
+        if (animator)
+            animator.SetFloat(animationSpeedFloatParameterName, speed);
     }
 
     private void Gravity()
