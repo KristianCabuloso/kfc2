@@ -10,8 +10,10 @@ public class WeaponController : EntityBehaviour<IKFCPlayerState>
     [SerializeField] Transform weaponHolder;
     [SerializeField] Weapon[] initialWeapons;
     [SerializeField] Transform shotPoint;
+    public string attackAnimationTriggerParameterName = "Attack";
 
     PlayerAnalytics playerAnalytics;
+    Animator animator;
 
     Weapon weapon;
     public Weapon CurrentWeapon { get => weapon; }
@@ -26,11 +28,14 @@ public class WeaponController : EntityBehaviour<IKFCPlayerState>
     {
         state.OnPlayerShoot = Photon_Shoot;
         playerAnalytics = GetComponent<PlayerAnalytics>();
+        animator = GetComponentInChildren<Animator>();
     }
 
     void Photon_Shoot()
     {
-        weapon.Shoot(shotPoint);
+        if (animator)
+            animator.SetTrigger(attackAnimationTriggerParameterName);
+        weapon.Shoot(shotPoint, playerAnalytics);
         /*print("ATIROU");
         Health hitHealth = GetForwardRaycastHitHealth(state.PlayerShotDirection);
         if (hitHealth)

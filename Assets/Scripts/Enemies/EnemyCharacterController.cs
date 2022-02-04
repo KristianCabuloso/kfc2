@@ -15,6 +15,7 @@ public class EnemyCharacterController : EntityBehaviour<IKFCPlayerState>
 {
     CharacterController controller;
     WeaponController weaponController;
+    Animator animator;
 
     BattleManager battleManager;
     Health target;
@@ -25,6 +26,7 @@ public class EnemyCharacterController : EntityBehaviour<IKFCPlayerState>
 
     public float walkingSpeed = 6f;
     public float gravity = -9.81f;
+    public string animationSpeedFloatParameterName = "MoveSpeed";
     public float startFightDistance = 1f;
     public float followTargetToShotDistance = 5f;
     //public float fleeTargetDistance = 1f;
@@ -39,6 +41,7 @@ public class EnemyCharacterController : EntityBehaviour<IKFCPlayerState>
     {
         controller = GetComponent<CharacterController>();
         weaponController = GetComponent<WeaponController>();
+        animator = GetComponentInChildren<Animator>();
     }
 
     public override void Attached()
@@ -46,6 +49,8 @@ public class EnemyCharacterController : EntityBehaviour<IKFCPlayerState>
         // Setar o transform do Bolt (online)
         state.SetTransforms(state.PlayerTransform, transform);
         state.SetTransforms(state.PlayerHeadTransform, enemyHead);
+        if (animator)
+            state.SetAnimator(animator);
 
         battleManager = FindObjectOfType<BattleManager>();
 
@@ -117,10 +122,14 @@ public class EnemyCharacterController : EntityBehaviour<IKFCPlayerState>
         else */if (dist > followTargetToShotDistance)
         {
             controller.Move(transform.forward * walkingSpeed * BoltNetwork.FrameDeltaTime);
+            if (animator)
+                animator.SetFloat(animationSpeedFloatParameterName, walkingSpeed);
             //moveDirection = _forward;
         }
         else
         {
+            if (animator)
+                animator.SetFloat(animationSpeedFloatParameterName, 0);
             weaponController.TryShoot();
         }
     }

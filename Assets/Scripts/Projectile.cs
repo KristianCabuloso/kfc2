@@ -56,7 +56,7 @@ public class Projectile : MonoBehaviour
                 Health h = c.GetComponentInParent<Health>();
                 if (h && h.entity.IsAttached)
                 {
-                    bool killed = h.ReceiveDamage(damage);
+                    bool killed = h.ReceiveDamage(damage, usingAnalytics);
 
                     if (usingAnalytics)
                     {
