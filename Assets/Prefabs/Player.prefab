@@ -139,7 +139,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   weaponHolder: {fileID: 1151752852906130582}
   initialWeapons:
-  - {fileID: 610932390378008527, guid: ec9bea94ea56ea441a8fdea227eacfaf, type: 3}
+  - {fileID: 610932390378008527, guid: d909e6aa0be1e437a929b1358110f388, type: 3}
   shotPoint: {fileID: 5438771767104244516}
   attackAnimationTriggerParameterName: Attack
 --- !u!114 &693157214214560583

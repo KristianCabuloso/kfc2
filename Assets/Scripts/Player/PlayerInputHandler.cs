@@ -53,7 +53,8 @@ public class PlayerInputHandler : MonoBehaviour
         playerActions.Run.canceled += ctx => playerCharacterController.isRunning = false;
 
         playerActions.Fire.performed += ctx => playerCharacterController.Command_Fire();
-        //playerActions.Run.performed += Command_Run;
+
+        playerActions.SwitchWeapon.performed += ctx => weaponController.SwitchWeapon((int)ctx.ReadValue<float>() - 1);
 
         playerActions.Revive.performed += ctx => playerReviveController.Command_Revive();
         playerActions.Revive.canceled += ctx => playerReviveController.Command_CancelRevive();

@@ -135,6 +135,20 @@ public class PlayerCharacterController : EntityBehaviour<IKFCPlayerState>
         Gravity();
         GroundCheck();
         MouseLook();
+
+        float scrollAxis;
+
+        if (SystemInfo.operatingSystemFamily == OperatingSystemFamily.Linux)
+        {
+            scrollAxis = Input.GetAxis("Mouse ScrollWheel");
+        }
+        else
+        {
+            scrollAxis = input.Player.SwitchWeaponScroll.ReadValue<float>();
+        }
+
+        if (scrollAxis != 0f)
+            weaponController.SwitchWeapon(scrollAxis > 0f);
     }
 
     // Funcao que faz o jogador se movimentar
