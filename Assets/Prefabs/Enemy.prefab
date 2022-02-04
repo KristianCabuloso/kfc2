@@ -309,8 +309,8 @@ MonoBehaviour:
   walkingSpeed: 5
   gravity: -9.81
   animationSpeedFloatParameterName: MoveSpeed
-  startFightDistance: 5
-  followTargetToShotDistance: 5
+  startFightDistance: 2.6
+  followTargetToShotDistance: 2.5
   enemyHead: {fileID: 1821610769518367910}
   baseTransform: {fileID: 0}
   groundCheck: {fileID: 5085846901815633391}
