@@ -48,13 +48,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   targetSprite: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
+  animator: {fileID: 0}
+  attackAnimationTrigger: Attack
   maxAmmo: 1000
   ammo: 0
   maxRecharges: 10
   recharges: 0
+  spawnBulletConsumeAmount: 1
+  bulletConsumeAmount: 1
   infinityRecharge: 1
   shotCooldown: 0.1
-  projectile: {fileID: 9196423441799094773, guid: b45e7feeac4db66a3b8289ba40c1ea52, type: 3}
+  projectile: {fileID: 9196423441799094773, guid: c4b584738222295f795f771dd9d0be9c, type: 3}
 --- !u!1 &3797189393713339422
 GameObject:
   m_ObjectHideFlags: 0

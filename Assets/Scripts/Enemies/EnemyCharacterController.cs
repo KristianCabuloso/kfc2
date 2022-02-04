@@ -49,14 +49,20 @@ public class EnemyCharacterController : EntityBehaviour<IKFCPlayerState>
         // Setar o transform do Bolt (online)
         state.SetTransforms(state.PlayerTransform, transform);
         state.SetTransforms(state.PlayerHeadTransform, enemyHead);
-        if (animator)
-            state.SetAnimator(animator);
+        /*if (animator)
+            state.SetAnimator(animator);*/
 
         battleManager = FindObjectOfType<BattleManager>();
 
         Health health = GetComponent<Health>();
         if (health)
             battleManager.NPCs.Add(health);
+    }
+
+    void Update()
+    {
+        if (animator)
+            animator.SetFloat(animationSpeedFloatParameterName, state.EnemySpeed);
     }
 
     public override void SimulateOwner()
@@ -123,13 +129,13 @@ public class EnemyCharacterController : EntityBehaviour<IKFCPlayerState>
         {
             controller.Move(transform.forward * walkingSpeed * BoltNetwork.FrameDeltaTime);
             if (animator)
-                animator.SetFloat(animationSpeedFloatParameterName, walkingSpeed);
+                state.EnemySpeed = walkingSpeed;
             //moveDirection = _forward;
         }
         else
         {
             if (animator)
-                animator.SetFloat(animationSpeedFloatParameterName, 0);
+                state.EnemySpeed = 0;
             weaponController.TryShoot();
         }
     }

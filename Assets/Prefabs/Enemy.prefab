@@ -308,6 +308,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   walkingSpeed: 5
   gravity: -9.81
+  animationSpeedFloatParameterName: MoveSpeed
   startFightDistance: 5
   followTargetToShotDistance: 5
   enemyHead: {fileID: 1821610769518367910}
@@ -396,6 +397,7 @@ MonoBehaviour:
   initialWeapons:
   - {fileID: 610932390378008527, guid: aa9fa0a0bbbcb18a9be1121297b7f3b5, type: 3}
   shotPoint: {fileID: 876080360863660165}
+  attackAnimationTriggerParameterName: Attack
 --- !u!1001 &5344936055946461388
 PrefabInstance:
   m_ObjectHideFlags: 0
