@@ -5,8 +5,6 @@ using UnityEngine;
 
 public class Projectile : MonoBehaviour
 {
-    const float REPAIR_SHOT_DIRECTION_DISTANCE_TOLERANCE = 1f;
-
     [SerializeField] LayerMask layerMask;
     [SerializeField] float speed = 1f;
     [SerializeField] int damage = 1;

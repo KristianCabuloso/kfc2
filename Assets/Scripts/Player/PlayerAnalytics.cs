@@ -6,6 +6,8 @@ using UnityEngine.Analytics;
 [RequireComponent(typeof(PlayerReviveController), typeof(WeaponController), typeof(NextPlayersAnalytics))]
 public class PlayerAnalytics : MonoBehaviour
 {
+    public static string playerName;
+
     float startGameTime;// = Time.time;
 
     string mostTimeAreaName;
@@ -56,6 +58,7 @@ public class PlayerAnalytics : MonoBehaviour
 
         AnalyticsResult result = Analytics.CustomEvent(eventName, new Dictionary<string, object>()
         {
+            { "Nome do jogador", playerName },
             { "Posicao", transform.position },
             { "Tempo de jogo", Time.time - startGameTime },
             { "Area onde passou mais tempo", mostTimeAreaName },

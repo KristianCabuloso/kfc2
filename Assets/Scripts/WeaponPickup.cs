@@ -8,10 +8,10 @@ public class WeaponPickup : MonoBehaviour
 
     void OnTriggerEnter(Collider c)
     {
-        WeaponController wc = c.GetComponentInParent<WeaponController>();
-        if (wc && wc.entity.IsOwner)
+        PlayerCharacterController pcc = c.GetComponentInParent<PlayerCharacterController>();
+        if (pcc && pcc.entity.IsOwner)
         {
-            wc.AddWeapon(weaponPrefab);
+            pcc.GetComponent<WeaponController>().AddWeapon(weaponPrefab);
             Destroy(gameObject);
         }
     }
