@@ -46,7 +46,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dff22e2ae39643cfb8b1de1472736dd0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  weaponPrefab: {fileID: 610932390378008527, guid: ec9bea94ea56ea441a8fdea227eacfaf, type: 3}
+  weaponPrefabPath: Prefabs/Weapons/Shotgun
 --- !u!114 &2568409164903812037
 MonoBehaviour:
   m_ObjectHideFlags: 0

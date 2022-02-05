@@ -5,8 +5,6 @@ using Photon.Bolt;
 
 public class WeaponController : EntityBehaviour<IKFCPlayerState>
 {
-    int testCounter;
-
     //[SerializeField] Transform shotRaycastPoint;
     //[SerializeField] LayerMask shotLayerMask;
     [SerializeField] Transform weaponHolder;
@@ -17,21 +15,24 @@ public class WeaponController : EntityBehaviour<IKFCPlayerState>
     PlayerAnalytics playerAnalytics;
     Animator animator;
 
+    int oldWeaponIndex;
     Weapon[] weapons;
-    int currentWeaponIndex;
-    public Weapon CurrentWeapon { get => weapons[currentWeaponIndex]; }
+    //int currentWeaponIndex;
+    public Weapon CurrentWeapon { private set; get; }
     // TODO Fazer sistema de troca de armas
 
+    
     void Awake()
     {
         weapons = new Weapon[initialWeapons.Length];
         if (weapons.Length > 0)
         {
-            weapons[0] = Instantiate(initialWeapons[0], weaponHolder);
+            Weapon w = weapons[0] = Instantiate(initialWeapons[0], weaponHolder);
+            CurrentWeapon = w;
 
             for (int i = 1; i < weapons.Length; i++)
             {
-                Weapon w = Instantiate(initialWeapons[i], weaponHolder);
+                w = Instantiate(initialWeapons[i], weaponHolder);
                 w.gameObject.SetActive(false);
                 weapons[i] = w;
             }
@@ -40,9 +41,22 @@ public class WeaponController : EntityBehaviour<IKFCPlayerState>
 
     public override void Attached()
     {
+        state.PlayerWeaponIndex = 0;
         state.OnPlayerShoot = Photon_Shoot;
+        state.AddCallback("PlayerPickupWeaponPath", Photon_AddWeapon);
+        //state.AddCallback("PlayerWeaponIndex", Photon_SwitchWeapon);
         playerAnalytics = GetComponent<PlayerAnalytics>();
         animator = GetComponentInChildren<Animator>();
+    }
+
+    void Update()
+    {
+        if (!entity.IsOwner)
+        {
+            int _weaponIndex = state.PlayerWeaponIndex;
+            if (oldWeaponIndex != _weaponIndex)
+                SwitchWeapon(_weaponIndex, oldWeaponIndex);
+        }
     }
 
     void Photon_Shoot()
@@ -50,31 +64,6 @@ public class WeaponController : EntityBehaviour<IKFCPlayerState>
         if (animator)
             animator.SetTrigger(attackAnimationTriggerParameterName);
         CurrentWeapon.Shoot(shotPoint, playerAnalytics);
-        /*print("ATIROU");
-        Health hitHealth = GetForwardRaycastHitHealth(state.PlayerShotDirection);
-        if (hitHealth)
-        {
-            int _damage = weapon.Damage;
-
-            if (playerAnalytics)
-            {
-                if (hitHealth.ReviveController)
-                {
-                    playerAnalytics.hittedPlayers++;
-                    if (hitHealth.state.PlayerHealth - _damage <= 0)
-                        playerAnalytics.kodPlayers++;
-                }
-                else if (hitHealth.GetComponent<EnemyCharacterController>())
-                {
-                    playerAnalytics.hittedEnemies++;
-                    if (hitHealth.state.PlayerHealth - _damage <= 0)
-                        playerAnalytics.killedEnemies++;
-                }
-            }
-
-            hitHealth.ReceiveDamage(_damage);
-            print(hitHealth.name + " TOMOU " + _damage + " DANO");
-        }*/
     }
 
     public void TryShoot()
@@ -88,37 +77,52 @@ public class WeaponController : EntityBehaviour<IKFCPlayerState>
 
     public void SwitchWeapon(bool next)
     {
-        CurrentWeapon.gameObject.SetActive(false);
+        int currentWeaponIndex = state.PlayerWeaponIndex;
+        int newWeaponIndex = currentWeaponIndex;
 
         if (next)
         {
-            currentWeaponIndex++;
-            if (currentWeaponIndex > weapons.Length - 1)
-                currentWeaponIndex = 0;
+            newWeaponIndex++;
+            if (newWeaponIndex > weapons.Length - 1)
+                newWeaponIndex = 0;
         }
         else
         {
-            currentWeaponIndex--;
-            if (currentWeaponIndex < 0)
-                currentWeaponIndex = weapons.Length - 1;
+            newWeaponIndex--;
+            if (newWeaponIndex < 0)
+                newWeaponIndex = weapons.Length - 1;
         }
 
-        CurrentWeapon.gameObject.SetActive(true);
+        SwitchWeapon(newWeaponIndex, currentWeaponIndex);
     }
 
-    public void SwitchWeapon(int weaponIndex)
+    public void SwitchWeapon(int weaponIndex, int currentWeaponIndex = -1)
     {
+        if (currentWeaponIndex == -1)
+            currentWeaponIndex = state.PlayerWeaponIndex;
+
         if (weaponIndex == currentWeaponIndex || weaponIndex < 0 || weaponIndex > weapons.Length - 1)
             return;
+            
+        weapons[currentWeaponIndex].gameObject.SetActive(false);
 
-        CurrentWeapon.gameObject.SetActive(false);
-        currentWeaponIndex = weaponIndex;
-        CurrentWeapon.gameObject.SetActive(true);
+        Weapon w = weapons[weaponIndex];
+        w.gameObject.SetActive(true);
+        CurrentWeapon = w;
+
+        state.PlayerWeaponIndex = weaponIndex;
+        oldWeaponIndex = weaponIndex;
     }
 
-    public void AddWeapon(Weapon weapon)
+    public void Photon_AddWeapon()
     {
-        Weapon w = Instantiate(weapon, weaponHolder);
+        string _weaponPrefabPath = state.PlayerPickupWeaponPath;
+
+        if (string.IsNullOrEmpty(_weaponPrefabPath))
+            return;
+
+        Weapon w = Instantiate(Resources.Load<Weapon>(_weaponPrefabPath), weaponHolder);
+        //Weapon w = Instantiate(weapon, weaponHolder);
         w.gameObject.SetActive(false);
 
         Weapon[] _weapons = new Weapon[weapons.Length + 1];
@@ -128,6 +132,13 @@ public class WeaponController : EntityBehaviour<IKFCPlayerState>
         _weapons[_weapons.Length - 1] = w;
         weapons = _weapons;
     }
+
+    /*public void Photon_SwitchWeapon()
+    {
+        Debug.LogError("000");
+        if (!entity.IsOwner)
+            Debug.LogError("111");  SwitchWeapon(state.PlayerWeaponIndex);
+    }*/
 
     public bool CheckForwardTargetHealth()
     {
