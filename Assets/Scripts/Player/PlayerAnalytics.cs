@@ -37,10 +37,11 @@ public class PlayerAnalytics : MonoBehaviour
 
     public void SendDieAnalytics()
     {
-        SendStatiscsAnalytics("Morreu");
+        SendDieAnalytics();
+        //SendStatiscsAnalytics("Morreu");
     }
 
-    void RefreshToNewMosTimeArea()
+    void RefreshToNewMostTimeArea()
     {
         float _time = Time.time - startMostTimeAreaTime;
         if (_time > mostTimeAreaTime)
@@ -50,18 +51,24 @@ public class PlayerAnalytics : MonoBehaviour
         }
     }
 
-    void SendStatiscsAnalytics(string eventName)
+    void SendStatiscsAnalytics()
     {
-        RefreshToNewMosTimeArea();
+        RefreshToNewMostTimeArea();
 
         int missShots = shotsMade - hittedPlayers - hittedEnemies;
 
-        AnalyticsResult result = Analytics.CustomEvent(eventName, new Dictionary<string, object>()
+        AnalyticsResult result1 = Analytics.CustomEvent("Dados basicos", new Dictionary<string, object>()
         {
             { "Nome do jogador", playerName },
             { "Posicao", transform.position },
             { "Tempo de jogo", Time.time - startGameTime },
             { "Area onde passou mais tempo", mostTimeAreaName },
+        });
+        print("Dados básicos | Resultado: " + result1);
+
+        AnalyticsResult result2 = Analytics.CustomEvent("Interacao com jogadores", new Dictionary<string, object>()
+        {
+            { "Nome do jogador", playerName },
             { "Revivido por jogadores", revivedByPlayers },
             { "Reviveu jogadores", revivedPlayers },
             { "Nocauteado por jogadores", kodByPlayers },
@@ -72,7 +79,7 @@ public class PlayerAnalytics : MonoBehaviour
             { "Acerto em inimigos", hittedEnemies },
             { "Matou inimigos", killedEnemies }
         });
-        print(eventName + " | " + result);
+        print("Interação com jogadores | Resultado: " + result2);
 
         GetComponent<NextPlayersAnalytics>().FinishAndSendAnalytics();
     }
@@ -94,7 +101,7 @@ public class PlayerAnalytics : MonoBehaviour
         RegionArea area = c.GetComponentInParent<RegionArea>();
         if (area && area.regionName != currentAreaName)
         {
-            RefreshToNewMosTimeArea();
+            RefreshToNewMostTimeArea();
 
             startMostTimeAreaTime = Time.time;
             currentAreaName = area.regionName;
@@ -104,7 +111,8 @@ public class PlayerAnalytics : MonoBehaviour
 
     void OnApplicationQuit()
     {
-        SendStatiscsAnalytics("Saiu");
+        SendStatiscsAnalytics();
+        //SendStatiscsAnalytics("Saiu");
     }
 
     void OnDestroy()

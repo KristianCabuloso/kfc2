@@ -84,6 +84,7 @@ public class NextPlayersAnalytics : MonoBehaviour
 
         Dictionary<string, object> dict = new Dictionary<string, object>
         {
+            {"Nome do jogador", PlayerAnalytics.playerName},
             {"Tempo total proximo de jogadores", nextToPlayersTotalTime},
             {"Media tempo proximo de jogadores", nextToPlayersTotalTime / groupsCount},
             {"Numero maximo de jogadores proximos", maxNextPlayersCount},
@@ -91,7 +92,7 @@ public class NextPlayersAnalytics : MonoBehaviour
             {"Tempo total distante de jogadores", distantFromPlayersTotalTime},
         };
         AnalyticsResult result = Analytics.CustomEvent("Proximodade de jogadores", dict);
-        print("Proximodade de jogadores | " + result);
+        print("Proximodade de jogadores | Resultado: " + result);
         string printMessage = "";
         foreach (KeyValuePair<string, object> k in dict)
         {
