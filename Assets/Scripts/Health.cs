@@ -122,7 +122,6 @@ public class Health : EntityBehaviour<IKFCPlayerState>
     public void Die()
     {
         // Enviar analytics de morte se for jogador
-        PlayerAnalytics playerAnalytics = GetComponent<PlayerAnalytics>();
         if (playerAnalytics)
             playerAnalytics.SendDieAnalytics();
 

@@ -10,7 +10,7 @@ public enum ReviveState : byte
     Reviving
 }
 
-[RequireComponent(typeof(Health))]
+[RequireComponent(typeof(Health), typeof(PlayerCharacterController))]
 public class PlayerReviveController : EntityBehaviour<IKFCPlayerState>
 {
     [Tooltip("Tempo que o jogador levará para morrer")]
@@ -22,6 +22,7 @@ public class PlayerReviveController : EntityBehaviour<IKFCPlayerState>
     public Vector3 dieRotation;
 
     BattleManager battleManager;
+    PlayerCharacterController playerCharacterController;
     PlayerAnalytics playerAnalytics;
     PlayerReviveHUD reviveHud;
     Health health;
@@ -33,6 +34,7 @@ public class PlayerReviveController : EntityBehaviour<IKFCPlayerState>
     public override void Attached()
     {
         battleManager = FindObjectOfType<BattleManager>();
+        playerCharacterController = GetComponent<PlayerCharacterController>();
         playerAnalytics = GetComponent<PlayerAnalytics>();
         health = GetComponent<Health>();
 
@@ -89,6 +91,8 @@ public class PlayerReviveController : EntityBehaviour<IKFCPlayerState>
         transform.localEulerAngles = dieRotation;
         State = ReviveState.Dying;
         state.PlayerIsDying = true;
+
+        playerCharacterController.Command_CancelMove();
     }
 
     // Retorna TRUE se recebeu dano (ou seja, está revivendo ou morrendo)

@@ -37,7 +37,7 @@ public class PlayerAnalytics : MonoBehaviour
 
     public void SendDieAnalytics()
     {
-        SendDieAnalytics();
+        SendStatiscsAnalytics();
         //SendStatiscsAnalytics("Morreu");
     }
 
