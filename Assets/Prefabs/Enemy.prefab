@@ -72,7 +72,7 @@ GameObject:
   m_Layer: 8
   m_Name: GroundCheck
   m_TagString: Untagged
-  m_Icon: {fileID: 0}
+  m_Icon: {fileID: 1206586993520771344, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -84,7 +84,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4038259860148242200}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.56, z: 0}
+  m_LocalPosition: {x: 0, y: 0.1, z: -0.26}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 2010939830004270911}
@@ -308,6 +308,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   walkingSpeed: 5
   gravity: -9.81
+  jumpHeight: 2
+  jumpCooldown: 15
+  jumpYDistanceTrigger: 5
   animationSpeedFloatParameterName: MoveSpeed
   startFightDistance: 500
   followTargetToShotDistance: 2.5
@@ -317,7 +320,7 @@ MonoBehaviour:
   groundDistance: 0.4
   groundMask:
     serializedVersion: 2
-    m_Bits: 64
+    m_Bits: 448
 --- !u!143 &8829918559154818705
 CharacterController:
   m_ObjectHideFlags: 0

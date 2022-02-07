@@ -23,9 +23,14 @@ public class EnemyCharacterController : EntityBehaviour<IKFCPlayerState>
     EnemyState enemyState;
     Vector3 velocity;
     bool isGrounded;
+    float jumpStartTime;
 
     public float walkingSpeed = 6f;
     public float gravity = -9.81f;
+    public float jumpHeight = 2f;
+    public float jumpCooldown = 5f;
+    public float jumpYDistanceTrigger = 1.3f;
+
     public string animationSpeedFloatParameterName = "MoveSpeed";
     public float startFightDistance = 1f;
     public float followTargetToShotDistance = 5f;
@@ -128,6 +133,9 @@ public class EnemyCharacterController : EntityBehaviour<IKFCPlayerState>
         else */if (dist > followTargetToShotDistance)
         {
             controller.Move(transform.forward * walkingSpeed * BoltNetwork.FrameDeltaTime);
+
+            TryJump(targetTransform.position.y);
+
             if (animator)
                 state.EnemySpeed = walkingSpeed;
             //moveDirection = _forward;
@@ -152,7 +160,22 @@ public class EnemyCharacterController : EntityBehaviour<IKFCPlayerState>
         Vector3 _rot = transform.eulerAngles;
         transform.eulerAngles = Vector3.up * _rot.y;
 
+        TryJump(baseTransform.position.y);
+
         controller.Move(transform.forward * walkingSpeed * BoltNetwork.FrameDeltaTime);
+    }
+
+    void TryJump(float followTargetYPosition)
+    {
+        if (isGrounded && Time.time - jumpStartTime > jumpCooldown)
+        {
+            float yDiff = followTargetYPosition - transform.position.y;
+            if (yDiff >= jumpYDistanceTrigger)
+            {
+                velocity.y = Mathf.Sqrt((yDiff * Random.Range(1f, 20f)) + jumpHeight * -2f * gravity);
+                jumpStartTime = Time.time;
+            }
+        }
     }
 
     bool TryFindNewTarget()
