@@ -6,6 +6,7 @@ using UnityEngine;
 public class Spawner : GlobalEventListener
 {
     public GameObject spawnObject;
+    public Transform[] spawnPoints;
     public int spawnObjectLenght = 4;
     public int spawnAmountPerInterval = 3;
     public float spawnWaitTimeAfterInterval = 3f;
@@ -59,20 +60,22 @@ public class Spawner : GlobalEventListener
         RefreshAndSendEvent();
         //waveHud.RefreshTextString(currentWave);
 
-        int spawnAmount = 0;
+        int spawnedAmount = 0;
+        Vector3 spawnPosition = spawnPoints[Random.Range(0, spawnPoints.Length - 1)].position;
 
         for (int i = 0; i < spawnObjectLenght * (battleManager.players.Count + 1) * currentWave; i++)
         {
-            spawnAmount++;
+            spawnedAmount++;
 
-            GameObject spawned = BoltNetwork.Instantiate(spawnObject, transform.position + (Vector3.left * 3.5f * spawnAmount), Quaternion.identity);
+            GameObject spawned = BoltNetwork.Instantiate(spawnObject, spawnPosition + (Vector3.left * 3.5f * spawnedAmount), Quaternion.identity);
             EnemyCharacterController enemy = spawned.GetComponent<EnemyCharacterController>();
             if (enemy)
                 enemy.baseTransform = transform;
 
-            if (spawnAmount == spawnAmountPerInterval)
+            if (spawnedAmount == spawnAmountPerInterval)
             {
-                spawnAmount = 0;
+                spawnedAmount = 0;
+                spawnPosition = spawnPoints[Random.Range(0, spawnPoints.Length - 1)].position;
                 yield return new WaitForSeconds(spawnWaitTimeAfterInterval);
             }
         }
