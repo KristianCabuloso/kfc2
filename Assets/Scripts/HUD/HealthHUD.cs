@@ -31,7 +31,7 @@ public class HealthHUD : MonoBehaviour
     void OnHealthChange()
     {
         int healthAmount = playerHealth.state.PlayerHealth;
-        float healthPercentage = (float)healthAmount / playerHealth.MaxHealth;
+        float healthPercentage = (float)healthAmount / playerHealth.maxHealth;
 
         Vector3 _scale = healthImageTransform.localScale;
         _scale.x = healthPercentage;

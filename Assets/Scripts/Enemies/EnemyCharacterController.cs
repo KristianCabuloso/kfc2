@@ -19,6 +19,7 @@ public class EnemyCharacterController : EntityBehaviour<IKFCPlayerState>
 
     BattleManager battleManager;
     Health target;
+    Collider[] colliders;
 
     EnemyState enemyState;
     Vector3 velocity;
@@ -47,6 +48,7 @@ public class EnemyCharacterController : EntityBehaviour<IKFCPlayerState>
         controller = GetComponent<CharacterController>();
         weaponController = GetComponent<WeaponController>();
         animator = GetComponentInChildren<Animator>();
+        colliders = GetComponentsInChildren<Collider>();
     }
 
     public override void Attached()
@@ -86,12 +88,7 @@ public class EnemyCharacterController : EntityBehaviour<IKFCPlayerState>
 
         velocity.y += gravity * BoltNetwork.FrameDeltaTime;
 
-        isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
-
-        if (isGrounded && velocity.y < 0)
-        {
-            velocity.y = -2f;
-        }
+        GroundCheck();
 
         controller.Move(velocity * BoltNetwork.FrameDeltaTime);
     }
@@ -165,14 +162,46 @@ public class EnemyCharacterController : EntityBehaviour<IKFCPlayerState>
         controller.Move(transform.forward * walkingSpeed * BoltNetwork.FrameDeltaTime);
     }
 
+    private void GroundCheck()
+    {
+        Collider[] _colliders = Physics.OverlapSphere(groundCheck.position, groundDistance, groundMask);
+
+        if (_colliders.Length <= colliders.Length)
+        {
+            int selfColliders = 0;
+
+            foreach (Collider ca in _colliders)
+            {
+                foreach (Collider cb in colliders)
+                {
+                    if (ca == cb)
+                    {
+                        selfColliders++;
+                        break;
+                    }
+                }
+            }
+
+            isGrounded = selfColliders != _colliders.Length;
+        }
+        else
+        {
+            isGrounded = _colliders.Length > 0;
+        }
+
+        if (isGrounded && velocity.y < 0)
+            velocity.y = -2f;
+
+    }
+
     void TryJump(float followTargetYPosition)
     {
         if (isGrounded && Time.time - jumpStartTime > jumpCooldown)
         {
             float yDiff = followTargetYPosition - transform.position.y;
-            if (yDiff >= jumpYDistanceTrigger)
+            if (Mathf.Abs(yDiff) >= jumpYDistanceTrigger)
             {
-                velocity.y = Mathf.Sqrt((yDiff * Random.Range(1f, 20f)) + jumpHeight * -2f * gravity);
+                velocity.y = Mathf.Sqrt((Mathf.Max(yDiff, 0) * Random.Range(1f, 20f)) + jumpHeight * -2f * gravity);
                 jumpStartTime = Time.time;
             }
         }

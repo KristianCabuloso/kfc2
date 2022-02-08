@@ -314,7 +314,7 @@ MonoBehaviour:
   animationSpeedFloatParameterName: MoveSpeed
   startFightDistance: 500
   followTargetToShotDistance: 2.5
-  enemyHead: {fileID: 1821610769518367910}
+  enemyHead: {fileID: 876080360863660165}
   baseTransform: {fileID: 0}
   groundCheck: {fileID: 5085846901815633391}
   groundDistance: 0.4
@@ -380,7 +380,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 18c2de3f49e66760a8885e31b8e0bf7f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 25
+  maxHealth: 5
   regenerationAmount: 2
   regenerationWaitTime: 0.5
   regenerationStartWaitTime: 5

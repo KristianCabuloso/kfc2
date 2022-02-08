@@ -28,6 +28,8 @@ public class PlayerCharacterController : EntityBehaviour<IKFCPlayerState>
     public float groundDistance = 0.4f; // defini o raio de detec??o do algum objeto
     public LayerMask groundMask; // Utilizado para definir se um objeto sera reconhecido como ch?o, para saber se o personagem pode pular/ desacelerar a queda
 
+    Collider[] colliders;
+
     Vector3 velocity; // Usado para calcular a acelera??o
     bool isGrounded; // boleana para verificar se esta no ch?o
     float xRotation;
@@ -39,6 +41,8 @@ public class PlayerCharacterController : EntityBehaviour<IKFCPlayerState>
     {
         controller = GetComponent<CharacterController>();
         animator = GetComponentInChildren<Animator>();
+
+        colliders = GetComponentsInChildren<Collider>();
         //weaponController = GetComponent<WeaponController>();
         //input = GetComponent<PlayerInputHandler>().Input;
 
@@ -210,12 +214,33 @@ public class PlayerCharacterController : EntityBehaviour<IKFCPlayerState>
 
     private void GroundCheck()
     {
-        isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
+        Collider[] _colliders = Physics.OverlapSphere(groundCheck.position, groundDistance, groundMask);
 
-        if(isGrounded && velocity.y < 0)
+        if (_colliders.Length <= colliders.Length)
         {
-            velocity.y = -2f;
+            int selfColliders = 0;
+
+            foreach (Collider ca in _colliders)
+            {
+                foreach (Collider cb in colliders)
+                {
+                    if (ca == cb)
+                    {
+                        selfColliders++;
+                        break;
+                    }
+                }
+            }
+
+            isGrounded = selfColliders != _colliders.Length;
         }
+        else
+        {
+            isGrounded = _colliders.Length > 0;
+        }
+
+        if (isGrounded && velocity.y < 0)
+            velocity.y = -2f;
 
     }
 

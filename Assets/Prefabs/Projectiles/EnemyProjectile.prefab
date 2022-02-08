@@ -46,7 +46,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   layerMask:
     serializedVersion: 2
-    m_Bits: 384
+    m_Bits: 128
   speed: 40
   damage: 1
   size: 0.19

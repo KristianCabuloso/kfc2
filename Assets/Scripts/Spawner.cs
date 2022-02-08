@@ -69,8 +69,16 @@ public class Spawner : GlobalEventListener
 
             GameObject spawned = BoltNetwork.Instantiate(spawnObject, spawnPosition + (Vector3.left * 3.5f * spawnedAmount), Quaternion.identity);
             EnemyCharacterController enemy = spawned.GetComponent<EnemyCharacterController>();
+            Health health = spawned.GetComponent<Health>();
+
             if (enemy)
                 enemy.baseTransform = transform;
+
+            if (health)
+            {
+                health.maxHealth *= currentWave;
+                health.state.PlayerHealth = health.maxHealth;
+            }
 
             if (spawnedAmount == spawnAmountPerInterval)
             {

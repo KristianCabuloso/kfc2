@@ -165,7 +165,7 @@ MonoBehaviour:
   groundDistance: 0.4
   groundMask:
     serializedVersion: 2
-    m_Bits: 64
+    m_Bits: 448
   isRunning: 0
 --- !u!114 &6997725471736627655
 MonoBehaviour:
@@ -179,7 +179,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 18c2de3f49e66760a8885e31b8e0bf7f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 250
+  maxHealth: 80
   regenerationAmount: 5
   regenerationWaitTime: 0.5
   regenerationStartWaitTime: 5

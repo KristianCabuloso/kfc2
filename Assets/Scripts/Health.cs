@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class Health : EntityBehaviour<IKFCPlayerState>
 {
-    [SerializeField] int maxHealth = 10;
+    public int maxHealth = 10;
 
     [Header("Regeneração")]
     [SerializeField] int regenerationAmount = 2;
@@ -13,12 +13,12 @@ public class Health : EntityBehaviour<IKFCPlayerState>
     [SerializeField] float regenerationStartWaitTime = 5f;
 
     public PlayerReviveController ReviveController { private set; get; }
-    public int MaxHealth { get => maxHealth; }
 
     PlayerAnalytics playerAnalytics;
 
     float regenerationStartCount;
     float regenerationCount;
+
 
     public override void Attached()
     {
